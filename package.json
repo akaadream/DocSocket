@@ -1,0 +1,28 @@
+{
+  "name": "docsocket",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "preview": "vite preview"
+  },
+  "devDependencies": {
+    "typescript": "^5.2.2",
+    "vite": "^5.2.0"
+  },
+  "dependencies": {
+    "@codemirror/commands": "^6.5.0",
+    "@codemirror/lang-json": "^6.0.1",
+    "@codemirror/state": "^6.4.1",
+    "@codemirror/theme-one-dark": "^6.1.2",
+    "@codemirror/view": "^6.26.3",
+    "@types/turndown": "^5.0.4",
+    "bulma": "^1.0.0",
+    "codemirror": "^6.0.1",
+    "colyseus.js": "^0.15.19",
+    "highlight.js": "^11.9.0",
+    "turndown": "^7.1.3"
+  }
+}

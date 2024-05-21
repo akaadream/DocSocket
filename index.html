@@ -1,0 +1,235 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>Doc Socket</title>
+
+    <script src="https://kit.fontawesome.com/c0bdc5a6b6.js" crossorigin="anonymous"></script>
+  </head>
+
+  <body>
+    <div id="app">
+        <div id="notifications">
+            <!-- <div class="notification is-success">
+                <div class="delete"></div>
+
+                Le message a correctement été ajouté !
+            </div>
+
+            <div class="notification is-warning">
+                <div class="delete"></div>
+
+                Je suis une notification 2
+            </div> -->
+        </div>
+
+        <div class="columns">
+            <div class="column">
+                <div class="title">
+                    Doc <span class="title-thin">Socket</span>
+                </div>
+            </div>
+            
+            <div class="column is-right">
+                <div id="connection" class="connection-status">
+                    <span id="connection-text" class="connection-text">Disconnected</span>
+                    <span class="connection-indicator"></span>
+                </div>
+            </div>
+        </div>
+
+        <div class="modals">
+            <div id="connection-modal" class="modal">
+                <div class="modal-background"></div>
+                <div class="modal-card">
+                    <button class="delete" aria-label="close"></button>
+                    <section class="modal-card-body">
+                        <form id="login">
+                            <div class="subtitle is-4">Service connection</div>
+
+                            <div class="field">
+                                <label class="label">Server address</label>
+
+                                <div class="control">
+                                    <input type="text" class="input" id="address" placeholder="ws(s)://">
+                                </div>
+                            </div>
+
+                            <div class="field">
+                                <label class="label">Service</label>
+
+                                <div class="select">
+                                    <select id="client">
+                                        <option value="colyseus">Colyseus</option>
+                                        <option value="socketio">Socket.io</option>
+                                        <option value="websocket">Web socket</option>
+                                    </select>
+                                </div>
+                            </div>
+                            
+                            <div class="field">
+                                <label class="label">Room name</label>
+
+                                <div class="control">
+                                    <input type="text" id="room-name" class="input">
+                                </div>
+                            </div>
+
+                            <div class="field">
+                                <label class="label">Username</label>
+
+                                <div class="control">
+                                    <input type="text" id="username" class="input">
+                                </div>
+                            </div>
+
+                            <div class="field">
+                                <div class="control">
+                                    <button class="button is-link">Connect</button>
+                                </div>
+                            </div>
+                        </form>
+                    </section>
+                </div>
+            </div>
+
+            <div id="message-modal" class="modal">
+                <div class="modal-background"></div>
+                <div class="modal-card">
+                    <button class="delete" aria-label="close"></button>
+                    <section class="modal-card-body">
+                        <form action="" id="add-message">
+                            <div class="subtitle is-4">Create a new message</div>
+
+                            <div class="field">
+                                <label class="label">Name</label>
+
+                                <div class="control">
+                                    <input id="message-name" type="text" class="input">
+                                </div>
+                            </div>
+
+                            <div class="field">
+                                <label class="label">Type</label>
+
+                                <div class="select">
+                                    <select id="message-type">
+                                        <option value="request">Request</option>
+                                        <option value="response">Response</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="field">
+                                <label class="label">Content</label>
+
+                                <div class="control">
+                                    <div id="message-editor-content" class="cm-editor">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="field">
+                                <div class="control">
+                                    <button class="button is-link">Add the message</button>
+                                </div>
+                            </div>
+                        </form>
+                    </section>
+                </div>
+            </div>
+
+            <div id="edit-message-modal" class="modal" data-message="0">
+                <div class="modal-background"></div>
+                <div class="modal-card">
+                    <button class="delete" aria-label="close"></button>
+                    <section class="modal-card-body">
+                        <form action="" id="add-message">
+                            <div class="subtitle is-4">Edit an existing message</div>
+
+                            <div class="field">
+                                <label class="label">Name</label>
+
+                                <div class="control">
+                                    <input id="edit-message-name" type="text" class="input">
+                                </div>
+                            </div>
+
+                            <div class="field">
+                                <label class="label">Type</label>
+
+                                <div class="select">
+                                    <select id="edit-message-type">
+                                        <option value="request">Request</option>
+                                        <option value="response">Response</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="field">
+                                <label class="label">Content</label>
+
+                                <div class="control">
+                                    <div id="edit-message-editor-content" class="cm-editor">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="field">
+                                <div class="control">
+                                    <button class="button is-link">Edit the message</button>
+                                </div>
+                            </div>
+                        </form>
+                    </section>
+                </div>
+            </div>
+
+            <div id="export-modal" class="modal">
+                <div class="modal-background"></div>
+                <div class="modal-card">
+                    <button class="delete" aria-label="close"></button>
+                    <section class="modal-card-body">
+                        <div class="subtitle is-4">Messages exportation</div>
+                        
+                        <div id="exportation">
+                            <pre id="export-pre" class="export-pre">
+                                <code id="export-code" class="export-code">
+
+                                </code>
+                            </pre>
+                        </div>
+                    </section>
+                </div>
+            </div>
+        </div>
+
+        <div class="spaced">
+            <button id="open-connection-modal" class="button modal-opening-button" data-target="connection-modal">Connect to the server</button>
+            <button id="open-message-modal" class="button modal-opening-button" data-target="message-modal">Add a new message</button>
+        </div>
+        
+
+        <div class="columns">
+            <div class="column">
+                <div id="template-messages" class="output disconnected">
+                </div>
+
+                <button id="export" class="button modal-opening-button" data-target="export-modal">
+                    Export documentation
+                </button>
+            </div>
+
+            <div class="column">
+                <div id="messages" class="output">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>

@@ -1,0 +1,302 @@
+:root {
+  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+
+  --indicator-size: 14px;
+}
+
+#app {
+    padding: 50px;
+}
+
+.modal {
+    display: flex;
+    opacity: 0;
+    pointer-events: none;
+    transition: 0.2s;
+}
+
+.modal.is-active {
+    opacity: 1;
+    pointer-events: all;
+}
+
+.modal-card {
+    border-radius: 12px;
+    transform: translateY(-20px);
+    transition: 0.2s;
+}
+
+.modal-card
+.delete {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    left: auto;
+    bottom: auto;
+}
+
+.modal.is-active
+.modal-card {
+    transform: translateY(0);
+}
+
+form:not(:last-child) {
+    margin-bottom: 48px;
+}
+
+.title {
+    font-weight: 700;
+}
+
+.title:not(:last-child) {
+    margin-bottom: 100px;
+}
+
+.title > span {
+    font-weight: 300;
+}
+
+#notifications {
+    display: flex;
+    width: 100%;
+    flex-direction: column;
+    align-items: flex-end;
+    position: fixed;
+    left: auto;
+    top: auto;
+    right: 24px;
+    bottom: 24px;
+
+    z-index: 99;
+    pointer-events: none;
+}
+
+.spaced {
+    margin-top: 32px;
+    margin-bottom: 12px;
+}
+
+.notification {
+    min-width: 300px;
+}
+
+.output {
+    height: 600px;
+    overflow: auto;
+    background: rgba(var(--bulma-text-rgb), 0.2);
+
+    border-radius: 12px;
+
+    padding: 18px;
+    margin-bottom: 12px;
+}
+
+.message:not(:last-child) {
+    margin-bottom: 8px;
+}
+
+.message-header {
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.message-name,
+.message-dropdown,
+.message-type {
+    pointer-events: none;
+}
+
+.message:not(.opened)
+.message-header {
+    border-end-start-radius: var(--bulma-message-header-radius);
+    border-end-end-radius: var(--bulma-message-header-radius);
+}
+
+.message-header:hover {
+    background-color: #323743;
+}
+
+.message
+.message-dropdown i {
+    transform: rotateZ(-90deg);
+    transition: 0.2s;
+}
+
+.message-content {
+    display: none;
+    padding: 12px;
+    background-color: var(--bulma-scheme-main-bis);
+    border-end-start-radius: var(--bulma-message-header-radius);
+    border-end-end-radius: var(--bulma-message-header-radius);
+}
+
+.message:is(.opened)
+.message-content {
+    display: block;
+    pointer-events: none;
+} 
+
+.message:is(.opened)
+.message-dropdown i {
+    transform: rotateZ(0deg);
+}
+
+.message-type {
+    user-select: none;
+}
+
+.select,
+.select select {
+    width: 100%;
+}
+
+.cm-editor {
+    outline: 1px solid hsl(221, 14%, calc(24% + 0%));
+    border-radius: 6px;
+    height: 300px;
+}
+
+.cm-scroller {
+    overflow: auto;
+}
+
+.is-right {
+    text-align: right;
+    align-items: center;
+}
+
+.connection-status {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+    align-items: center;
+}
+
+.connection-text {
+    font-style: italic;
+}
+
+.connection-indicator {
+    display: block;
+    width: var(--indicator-size);
+    height: var(--indicator-size);
+    margin-left: 8px;
+    border-radius: var(--indicator-size);
+    background: #777777;
+}
+
+.connection-status.connected
+.connection-indicator {
+    background-color: #cccccc;
+    box-shadow: 0 0 8px 4px #cccccc33;
+}
+
+.connection-status.connected
+.connection-text {
+    font-style: normal;
+}
+
+.message-template {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    padding: 8px;
+    border: 1px solid hsl(221, 14%, calc(24% + 0%));
+    border-radius: 10px;
+
+    transition: 0.2s;
+    cursor: pointer;
+    pointer-events: all;
+}
+
+.disconnected .message-template button {
+    background-color: #323743;
+    border-color: #323743;
+    color: #777777;
+    pointer-events: none;
+}
+
+.message-template:not(:last-child) {
+    margin-bottom: 8px;
+}
+
+.message-template button {
+    pointer-events: visible;
+}
+
+/* .message-template button:not(:first-child) {
+    margin-left: 4px;
+} */
+
+.message-template:hover {
+    background-color: black;
+}
+
+.disconnected .message-template {
+    cursor: default;
+    pointer-events: none;
+}
+
+/* HLJS */
+.hljs-attr {
+    color: var(--bulma-warning);
+}
+
+.hljs-number,
+.hljs-keyword {
+    color: var(--bulma-code);
+}
+
+.hljs-string {
+    color: var(--bulma-success);
+}
+
+.hljs-punctuation {
+    color: #f362d4;
+}
+
+.hljs-code {
+    display: block;
+}
+
+.export-pre {
+    position: relative;
+    line-height: 24px;
+    border-radius: 8px;
+
+    outline: 3px solid transparent;
+    transition: 0.2s;
+}
+
+.export-pre::after {
+    position: absolute;
+    content: 'Click to copy';
+    pointer-events: none;
+    
+    top: 20px;
+    left: auto;
+    right: 20px;
+    bottom: auto;
+
+    padding: 12px;
+    border-radius: 8px;
+
+    background: #141416;
+    opacity: 0;
+    transition: 0.2s;
+}
+
+.export-pre:hover {
+    outline-color: #323743;
+    cursor: default;
+}
+
+.export-pre:hover::after {
+    opacity: 1;
+}
+
+.export-code {
+    border-radius: 8px;
+    pointer-events: none;
+}
