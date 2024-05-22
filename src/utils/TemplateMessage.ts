@@ -165,7 +165,7 @@ export class TemplateMessage {
         const keys = Object.keys(json);
         const values = Object.values(json);
         for (let i = 0; i < keys.length; i++) {
-            str += `\t"${keys[i]}": ${typeof(values[i])}`;
+            str += `\t"${keys[i]}": "${typeof(values[i])}"`;
             if (i < keys.length - 1) {
                 str += `\n`;
             }
