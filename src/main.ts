@@ -12,6 +12,15 @@ import { appStorage, client, modalsManager, setClient } from './utils/instances'
 import { SocketIOClient } from './clients/SocketIOClient';
 import { WebSocketClient } from './clients/WebSocketClient';
 import { TemplateMessage, TemplateMessageType } from './utils/TemplateMessage';
+import { Project } from './app/Project';
+import { createApp } from 'vue';
+import Application from './app/Application.vue';
+import ConnectionModal from './app/modals/ConnectionModal.vue';
+import CreateProjectModal from './app/modals/CreateProjectModal.vue';
+import EditMessageModal from './app/modals/EditMessageModal.vue';
+import ExportModal from './app/modals/ExportModal.vue';
+import MessageModal from './app/modals/MessageModal.vue';
+import Menu from './app/menu/Menu.vue';
 
 const state = EditorState.create({
     extensions: [
@@ -23,6 +32,15 @@ const state = EditorState.create({
 });
 let contentEditor: EditorView|null = null;
 export let editContentEditor: EditorView|null = null;
+
+const app = createApp(Application);
+app.component('Menu', Menu);
+app.component('ConnectionModal', ConnectionModal);
+app.component('CreateProjectModal', CreateProjectModal);
+app.component('EditMessageModal', EditMessageModal);
+app.component('ExportModal', ExportModal);
+app.component('MessageModal', MessageModal);
+app.mount('#app');
 
 document.addEventListener('DOMContentLoaded', () => {
     handleEvents();    
@@ -112,13 +130,42 @@ function handleEvents() {
         exportPre.addEventListener('click', (event: Event) => {
             event.preventDefault();
 
-            console.log("clicked");
-
             navigator.clipboard.writeText(exportCode.innerText).then(() => {
                 new Notification("The documentation has been copied", NotificationType.SUCCESS);
             }).catch(() => {
                 new Notification("Impossible to copy inside the clipboard", NotificationType.SUCCESS);
             });
+        });
+    }
+
+    const deleteButton = document.getElementById('reset') as HTMLElement;
+    if (deleteButton) {
+        deleteButton.addEventListener('click', (event: Event) => {
+            event.preventDefault();
+
+            if (confirm("Do you really want to reset the local storage")) {
+                localStorage.clear();
+                new Notification("Local storage has been cleared", NotificationType.SUCCESS);
+            }
+        });
+    }
+
+    const createProject = document.getElementById('create-project') as HTMLElement;
+    if (createProject) {
+        createProject.addEventListener('submit', (event: Event) => {
+            event.preventDefault();
+
+            const projectName = document.getElementById('project-name') as HTMLInputElement;
+            if (projectName) {
+                if (projectName.value.length > 0) {
+                    const project = new Project(projectName.value);
+                    appStorage.projects.push(project);
+                    appStorage.currentProject = project;
+
+                    // TODO: make the app accessible
+                }
+                
+            }
         });
     }
 }

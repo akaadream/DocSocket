@@ -4,7 +4,13 @@
   --indicator-size: 14px;
 }
 
-#app {
+html, body {
+    position: relative;
+    width: 100%;
+    height: 100%;
+}
+
+.app-content {
     margin-left: 260px;
     padding: 24px;
 }

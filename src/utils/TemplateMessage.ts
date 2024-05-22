@@ -92,7 +92,7 @@ export class TemplateMessage {
             event.preventDefault();
 
             if (confirm("Do you really want to delete this message?")) {
-                if (appStorage.tryDelete(this.name)) {
+                if (appStorage.currentProject?.tryDelete(this.name)) {
                     templateMessage.remove();
                     appStorage.save();
                     new Notification("The message has been deleted.", NotificationType.SUCCESS);
