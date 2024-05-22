@@ -20,8 +20,6 @@ export class TemplateMessage {
         this.name = name;
         this.args = args;
         this.type = type;
-
-        this.create();
     }
 
     public create() {

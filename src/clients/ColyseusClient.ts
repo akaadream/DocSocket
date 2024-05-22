@@ -1,6 +1,6 @@
 import { Client, Room } from "colyseus.js";
 import { Notification, NotificationType } from "../utils/Notification";
-import { appStorage, modalsManager } from "../utils/instances";
+import { appStorage } from "../utils/instances";
 import { DocSocketClient } from "./DocSocketClient";
 import { TemplateMessage } from "../utils/TemplateMessage";
 
@@ -27,15 +27,8 @@ export class ColyseusClient extends DocSocketClient {
                 }
             }
 
-            (document.getElementById('connection') as HTMLElement).classList.add('connected');
-            (document.getElementById('connection-text') as HTMLElement).innerText = `Connected`;
             new Notification(`You've successfully been connected to the ${roomName} room.`, NotificationType.SUCCESS);
-            (document.getElementById('connection-modal') as HTMLElement).style.display = "none";
-            (document.getElementById('open-connection-modal') as HTMLElement).style.display = "none";
-
-            modalsManager.closeAllModals();
         }).catch(() => {
-            modalsManager.closeAllModals();
             new Notification(`Impossible to create or join a ${roomName} room.`, NotificationType.ERROR);
         });
     }
