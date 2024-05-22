@@ -9,13 +9,10 @@ const USERNAME_KEY = "username";
 export class AppStorage {
     messages: TemplateMessage[];
 
-    constructor(messages?: TemplateMessage[]) {
-        if (messages) {
-            this.messages = messages;
-        }
-        else {
-            this.messages = [];
-        }
+    constructor() {
+        this.messages = [];
+
+        // TODO: load the last project and hydrate the app
     }
 
     /**

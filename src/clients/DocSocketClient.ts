@@ -2,9 +2,11 @@ import { Message, MessageType } from "../utils/Message";
 
 export class DocSocketClient {
     readonly messages: Message[];
+    connected: boolean;
     
     constructor() {
         this.messages = [];
+        this.connected = false;
     }
 
     public request(name: string, args: string): void {
@@ -15,7 +17,7 @@ export class DocSocketClient {
         this.messages.push(new Message(name, JSON.stringify(obj, null, 2), MessageType.RESPONSE));
     }
 
-    public message(name: string): void {
+    public message(_name: string): void {
 
     }
 }

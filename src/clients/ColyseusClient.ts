@@ -18,6 +18,7 @@ export class ColyseusClient extends DocSocketClient {
             username: username
         }).then((room: Room) => {
             this.currentRoom = room;
+            this.connected = true;
 
             for (let i = appStorage.messages.length - 1; i >= 0; i--) {
                 const message: TemplateMessage = appStorage.messages[i];
@@ -34,6 +35,7 @@ export class ColyseusClient extends DocSocketClient {
 
             modalsManager.closeAllModals();
         }).catch(() => {
+            modalsManager.closeAllModals();
             new Notification(`Impossible to create or join a ${roomName} room.`, NotificationType.ERROR);
         });
     }

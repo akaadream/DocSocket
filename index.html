@@ -11,6 +11,25 @@
   </head>
 
   <body>
+    <div class="nav">
+        <div class="nav-title subtitle is-5">Projects</div>
+
+        <div id="nav" class="nav-links">
+            <a href="#" class="nav-link"><i class="fas fa-folder"></i> Name of the project</a>
+            <a href="#" class="nav-link"><i class="fas fa-folder"></i> Name of the project</a>
+            <a href="#" class="nav-link"><i class="fas fa-folder"></i> Name of the project</a>
+            <a href="#" class="nav-link"><i class="fas fa-folder"></i> Name of the project</a>
+            <a href="#" class="nav-link"><i class="fas fa-folder"></i> Name of the project</a>
+            <a href="#" class="nav-link"><i class="fas fa-folder"></i> Name of the project</a>
+            <a href="#" class="nav-link"><i class="fas fa-folder"></i> Name of the project</a>
+            <a href="#" class="nav-link"><i class="fas fa-folder"></i> Name of the project</a>
+            <a href="#" class="nav-link"><i class="fas fa-folder"></i> Name of the project</a>
+            <a href="#" class="nav-link"><i class="fas fa-folder"></i> Name of the project</a>
+            <a href="#" class="nav-link"><i class="fas fa-folder"></i> Name of the project</a>
+            <a href="#" class="nav-link"><i class="fas fa-folder"></i> Name of the project</a>
+        </div>
+    </div>
+
     <div id="app">
         <div id="notifications">
             <!-- <div class="notification is-success">
@@ -31,13 +50,23 @@
                 <div class="title">
                     Doc <span class="title-thin">Socket</span>
                 </div>
-            </div>
-            
-            <div class="column is-right">
+
                 <div id="connection" class="connection-status">
                     <span id="connection-text" class="connection-text">Disconnected</span>
                     <span class="connection-indicator"></span>
                 </div>
+            </div>
+            
+            <div class="column is-right">
+                <button class="button expand-button">
+                    <span class="icon">
+                        <i class="fas fa-plus"></i>
+                    </span>
+
+                    <span class="text">
+                        New project
+                    </span>
+                </button>
             </div>
         </div>
 
@@ -208,8 +237,24 @@
         </div>
 
         <div class="spaced">
-            <button id="open-connection-modal" class="button modal-opening-button" data-target="connection-modal">Connect to the server</button>
-            <button id="open-message-modal" class="button modal-opening-button" data-target="message-modal">Add a new message</button>
+            <button id="open-connection-modal" class="button modal-opening-button" data-target="connection-modal">
+                <span class="icon">
+                    <i class="fa-solid fa-right-to-bracket"></i>
+                </span>
+                
+                <span class="text">
+                    Connect to the server
+                </span>
+            </button>
+            <button id="open-message-modal" class="button modal-opening-button" data-target="message-modal">
+                <span class="icon">
+                    <i class="fa-solid fa-plus"></i>
+                </span>
+                
+                <span class="text">
+                    Add a new message
+                </span>
+            </button>
         </div>
         
 
@@ -219,7 +264,13 @@
                 </div>
 
                 <button id="export" class="button modal-opening-button" data-target="export-modal">
-                    Export documentation
+                    <span class="icon">
+                        <i class="fa-solid fa-file-export"></i>
+                    </span>
+                    
+                    <span class="text">
+                        Export documentation
+                    </span>
                 </button>
             </div>
 

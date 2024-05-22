@@ -5,7 +5,8 @@
 }
 
 #app {
-    padding: 50px;
+    margin-left: 260px;
+    padding: 24px;
 }
 
 .modal {
@@ -46,10 +47,6 @@ form:not(:last-child) {
 
 .title {
     font-weight: 700;
-}
-
-.title:not(:last-child) {
-    margin-bottom: 100px;
 }
 
 .title > span {
@@ -168,7 +165,7 @@ form:not(:last-child) {
 .connection-status {
     display: flex;
     flex-direction: row;
-    justify-content: flex-end;
+    justify-content: flex-start;
     align-items: center;
 }
 
@@ -299,4 +296,53 @@ form:not(:last-child) {
 .export-code {
     border-radius: 8px;
     pointer-events: none;
+}
+
+.nav {
+    display: flex;
+    position: fixed;
+    flex-direction: column;
+    width: 260px;
+    height: 100%;
+    padding: 24px;
+    background-color: #000;
+
+    overflow-y: auto;
+    scrollbar-width: 8px;
+    scrollbar-color: #333;
+}
+
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--bulma-border);
+}
+
+::-webkit-scrollbar-thumb {
+  background: #626b7c;
+  border-radius: 8px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #919db3;
+}
+
+.nav-title {
+    padding-left: 12px;
+}
+
+.nav-link {
+    display: block;
+    padding: 8px 12px;
+    border-radius: 8px;
+
+    color: #bbb;
+    transition: 0.2s;
+}
+
+.nav-link:hover {
+    background-color: #141416;
+    color: white;
 }

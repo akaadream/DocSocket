@@ -191,7 +191,7 @@ function connect(event: Event) {
             break;
     }
     
-    if (client) {
+    if (client && client.connected) {
         const templateMessages = document.getElementById('template-messages') as HTMLElement;
         if (templateMessages) {
             templateMessages.classList.remove('disconnected');

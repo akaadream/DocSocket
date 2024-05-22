@@ -9,11 +9,11 @@ export class WebSocketClient extends DocSocketClient {
 
         this.username = username;
         this.socket = new WebSocket(address);
-        this.socket.onopen = function (event) {
+        this.socket.onopen = function (_event) {
 
         }
 
-        this.socket.onclose = function (event) {
+        this.socket.onclose = function (_event) {
 
         }
 
