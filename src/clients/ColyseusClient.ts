@@ -1,8 +1,8 @@
 import { Client, Room } from "colyseus.js";
 import { Notification, NotificationType } from "../utils/Notification";
-import { appStorage } from "../utils/instances";
 import { DocSocketClient } from "./DocSocketClient";
 import { TemplateMessage } from "../utils/TemplateMessage";
+import {useGlobalStore} from "../app/storages/global.ts";
 
 export class ColyseusClient extends DocSocketClient {
     readonly client: Client;
@@ -20,8 +20,10 @@ export class ColyseusClient extends DocSocketClient {
             this.currentRoom = room;
             this.connected = true;
 
-            for (let i = appStorage.messages.length - 1; i >= 0; i--) {
-                const message: TemplateMessage = appStorage.messages[i];
+            const globalStorage = useGlobalStore();
+
+            for (let i = globalStorage.appStorage.messages.length - 1; i >= 0; i--) {
+                const message: TemplateMessage = globalStorage.appStorage.messages[i];
                 if (message && !message.mounted) {
                     message.mount();
                 }

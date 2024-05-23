@@ -1,11 +1,14 @@
 import { TemplateMessage } from "../utils/TemplateMessage";
+import {slugify} from "../utils/Slugify.ts";
 
 export class Project {
     name: string;
+    slug: string;
     messages: TemplateMessage[];
 
     constructor(name: string, messages?: TemplateMessage[]) {
         this.name = name;
+        this.slug = slugify(name);
         this.messages = [];
 
         if (messages && Array.isArray(messages)) {
@@ -15,26 +18,6 @@ export class Project {
                 }
             });
         }
-
-        this.create();
-    }
-
-    create() {
-        const parent = document.getElementById('nav') as HTMLElement;
-        if (!parent) {
-            return;
-        }
-
-        const menuElement = document.createElement('a');
-        menuElement.classList.add('nav-link');
-
-        const menuIcon = document.createElement('i');
-        menuIcon.classList.add('fas', 'fa-folder');
-
-        menuElement.appendChild(menuIcon);
-        menuElement.appendChild(document.createTextNode(`${this.name}`));
-
-        parent.appendChild(menuElement);
     }
 
     /**

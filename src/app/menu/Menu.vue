@@ -1,10 +1,8 @@
-<script lang="ts">
-import {defineComponent} from "vue";
+<script setup lang="ts">
 import NavItem from "./NavItem.vue";
+import {useGlobalStore} from "../storages/global.ts";
 
-export default defineComponent({
-    components: {NavItem}
-})
+const globalStore = useGlobalStore();
 </script>
 
 <template>
@@ -12,7 +10,7 @@ export default defineComponent({
         <div class="nav-title subtitle is-5">Projects</div>
 
         <div id="nav" class="nav-links">
-            <NavItem project-name="Test project" project-slug="test-project" />
+            <NavItem v-for="project in globalStore.projects" :project-name="project.name" :project-slug="project.slug" />
         </div>
     </div>
 </template>

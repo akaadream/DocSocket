@@ -8,10 +8,20 @@ import MessageModal from "./modals/MessageModal.vue";
 import {useModalsStore} from "./storages/modals.ts";
 import Notification from "./components/Notification.vue";
 import {useGlobalStore} from "./storages/global.ts";
-import {onMounted} from "vue";
+import {onMounted, ref, Ref, watch} from "vue";
+import TemplateMessage from "./components/TemplateMessage.vue";
+import {Project} from "./Project.ts";
+import ModalButton from "./components/ModalButton.vue";
+import Message from "./components/Message.vue";
+import {MessageType} from "../utils/Message.ts";
 
 const globalStore = useGlobalStore();
 const modalsStore = useModalsStore();
+
+watch(globalStore.currentProject, (newProject, oldProject) => {
+    console.log("old:", oldProject);
+    console.log("new:", newProject);
+});
 
 /**
  * Clear the content from the local storage
@@ -66,7 +76,7 @@ onMounted(() => {
                     Doc<span class="title-thin">ket</span>
                 </div>
 
-                <div id="connection" class="connection-status" :class="{
+                <div v-if="globalStore.currentProject" id="connection" class="connection-status" :class="{
                     'connected': globalStore.client && globalStore.client.connected
                 }">
                     <span v-if="globalStore.client && globalStore.client.connected" id="connection-text" class="connection-text">Connected</span>
@@ -75,71 +85,42 @@ onMounted(() => {
                 </div>
             </div>
 
-            <div class="column is-right spaced">
-                <button id="open-message-modal" @click="modalsStore.open('project-modal')" class="button expand-button modal-opening-button" data-target="project-modal">
-                    <span class="icon">
-                        <i class="fas fa-plus"></i>
-                    </span>
-
-                    <span class="text">
-                        New project
-                    </span>
-                </button>
+            <div class="column is-right">
+                <ModalButton label="New project" modal-name="project-modal" icon="fa-plus" />
             </div>
         </div>
 
-        <div class="buttons spaced">
-            <button id="open-connection-modal" @click="modalsStore.open('connection-modal')" class="button modal-opening-button" data-target="connection-modal">
-                <span class="icon">
-                    <i class="fa-solid fa-right-to-bracket"></i>
-                </span>
-
-                <span class="text">
-                    Connect to the server
-                </span>
-            </button>
-            <button id="open-message-modal" @click="modalsStore.open('message-modal')" class="button modal-opening-button" data-target="message-modal">
-                <span class="icon">
-                    <i class="fa-solid fa-plus"></i>
-                </span>
-
-                <span class="text">
-                    Add a new message
-                </span>
-            </button>
+        <div v-if="globalStore.currentProject" class="buttons spaced">
+            <ModalButton v-if="!globalStore.client" label="Connect to the server" modal-name="connection-modal" icon="fa-right-to-bracket" />
+            <ModalButton label="Add a new message" modal-name="message-modal" icon="fa-plus" />
         </div>
 
-        <div class="columns">
+        <div v-if="globalStore.currentProject" class="columns">
             <div class="column">
                 <div id="template-messages" class="output" :class="{
                     'disconnected': !globalStore.client || !globalStore.client.connected
                 }">
+                    <TemplateMessage v-for="message in (globalStore.currentProject as Project).messages" :args="message.args" :name="message.name" />
                 </div>
 
                 <div class="buttons">
-                    <button id="export" class="button modal-opening-button" data-target="export-modal">
-                    <span class="icon">
-                        <i class="fa-solid fa-file-export"></i>
-                    </span>
+                    <ModalButton label="Export documentation" modal-name="export-modal" icon="fa-file-export" />
 
-                        <span class="text">
-                        Export documentation
-                    </span>
-                    </button>
                     <button id="reset" class="button is-danger" @click="deleteLocalStorage">
-                    <span class="icon">
-                        <i class="fa-solid fa-trash"></i>
-                    </span>
+                        <span class="icon">
+                            <i class="fa-solid fa-trash"></i>
+                        </span>
 
-                        <span class="text">
-                        Delete local storage
-                    </span>
+                            <span class="text">
+                            Delete local storage
+                        </span>
                     </button>
                 </div>
             </div>
 
             <div class="column">
                 <div id="messages" class="output">
+                    <Message v-for="message in globalStore.messages" :content="message.content" :name="message.name" :type="MessageType[message.type]" />
                 </div>
             </div>
         </div>

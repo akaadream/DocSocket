@@ -1,6 +1,6 @@
 import { deleteChildrenOf, recreateEditEditor } from "../main";
 import { Notification, NotificationType } from "./Notification";
-import { appStorage, client, modalsManager } from "./instances";
+import {useGlobalStore} from "../app/storages/global.ts";
 
 export enum TemplateMessageType {
     REQUEST,
@@ -16,7 +16,8 @@ export class TemplateMessage {
     mounted: boolean = false;
 
     constructor(name: string, args: string, type: TemplateMessageType) {
-        this.id = appStorage.messages.length;
+        const globalStorage = useGlobalStore();
+        this.id = globalStorage.appStorage.messages.length;
         this.name = name;
         this.args = args;
         this.type = type;
@@ -56,17 +57,19 @@ export class TemplateMessage {
         templateMessageDeleteButton.classList.add('button', 'is-danger', 'is-dark');
         templateMessageDeleteButtonIcon.classList.add('fas', 'fa-trash')
 
+        const globalStorage = useGlobalStore();
+
         // Events
         if (this.type === TemplateMessageType.REQUEST) {
             this.mounted = true;
             templateMessageTestButton.addEventListener('click', (event: Event) => {
                 event.preventDefault();
-                client?.request(this.name, this.args);
+                globalStorage.client?.request(this.name, this.args);
             });
         }
         else {
-            if (client) {
-                client.message(this.name);
+            if (globalStorage.client) {
+                globalStorage.client.message(this.name);
                 this.mounted = true;
             }
         }
@@ -81,8 +84,7 @@ export class TemplateMessage {
                 (document.getElementById('edit-message-type') as HTMLInputElement).value = this.type == TemplateMessageType.REQUEST ? "request" : "response";
                 deleteChildrenOf((document.getElementById('edit-message-editor-content') as HTMLElement));
                 recreateEditEditor(this.args);
-                
-                modalsManager.openModal(modal);
+
             }
         });
 
@@ -90,9 +92,9 @@ export class TemplateMessage {
             event.preventDefault();
 
             if (confirm("Do you really want to delete this message?")) {
-                if (appStorage.currentProject?.tryDelete(this.name)) {
+                if (globalStorage.appStorage.currentProject?.tryDelete(this.name)) {
                     templateMessage.remove();
-                    appStorage.save();
+                    globalStorage.appStorage.save();
                     new Notification("The message has been deleted.", NotificationType.SUCCESS);
                 }
             }
@@ -133,8 +135,8 @@ export class TemplateMessage {
             // TODO: if the type changed, add/remove the test button if needed
         }
 
-        appStorage.save();
-        modalsManager.closeAllModals();
+        const globalStorage = useGlobalStore();
+        globalStorage.appStorage.save();
     }
 
     public update(id: number) {
@@ -150,8 +152,10 @@ export class TemplateMessage {
             return;
         }
 
-        if (client) {
-            client.message(this.name);
+        const globalStorage = useGlobalStore();
+
+        if (globalStorage.client) {
+            globalStorage.client.message(this.name);
             this.mounted = true;
         }
     }

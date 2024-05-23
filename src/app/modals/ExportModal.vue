@@ -16,7 +16,7 @@ function copyExport() {
 
 <template>
     <Modal id="export-modal">
-        <div class="subtitle is-4">Messages exportation</div>
+        <div class="subtitle is-4">Documentation exportation</div>
 
         <div id="exportation">
             <pre id="export-pre" class="export-pre" @click="copyExport">

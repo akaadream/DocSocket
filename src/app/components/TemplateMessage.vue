@@ -15,20 +15,20 @@ const props = defineProps<TemplateMessageProps>();
             <div class="message-template-name tag is-medium is-link">
                 {{ props.name }}
             </div>
+        </div>
 
-            <div class="buttons has-addons">
-                <button class="button is-dark">
-                    <Icon name="fa-play" aria-hidden="true" />
-                </button>
+        <div class="buttons has-addons">
+            <button class="button is-dark">
+                <Icon name="fa-play" aria-hidden="true" />
+            </button>
 
-                <button class="button is-dark modal-opening-button" data-target="edit-message-modal">
-                    <Icon name="fa-pen-to-square" aria-hidden="true" />
-                </button>
+            <button class="button is-dark modal-opening-button" data-target="edit-message-modal">
+                <Icon name="fa-pen-to-square" aria-hidden="true" />
+            </button>
 
-                <button class="button is-danger is-dark">
-                    <Icon name="fa-trash" aria-hidden="true" />
-                </button>
-            </div>
+            <button class="button is-danger is-dark">
+                <Icon name="fa-trash" aria-hidden="true" />
+            </button>
         </div>
     </div>
 </template>

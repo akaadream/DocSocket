@@ -10,12 +10,7 @@ import { createApp } from "vue";
 import { createPinia } from "pinia";
 import Application from "./app/Application.vue";
 
-const pinia = createPinia();
-const app = createApp(Application);
-app.use(pinia);
-app.mount('#app');
-
-const state = EditorState.create({
+export const editorState = EditorState.create({
     extensions: [
         basicSetup,
         jsonLanguage,
@@ -23,18 +18,14 @@ const state = EditorState.create({
         keymap.of([indentWithTab])
     ]
 });
-let contentEditor: EditorView|null = null;
+
+const pinia = createPinia();
+const app = createApp(Application);
+app.use(pinia);
+app.mount('#app');
 export let editContentEditor: EditorView|null = null;
 
 document.addEventListener('DOMContentLoaded', () => {
-    const messageEditorContent = document.getElementById('message-editor-content');
-    if (messageEditorContent) {
-        contentEditor = new EditorView({
-            state,
-            parent: messageEditorContent,
-        });
-    }
-
     recreateEditEditor("");
 });
 
@@ -63,141 +54,3 @@ export function deleteChildrenOf(element: HTMLElement) {
         }
     }
 }
-
-/**
- * Create events for app predefined elements
- */
-function handleEvents() {
-    // When the user add a new message
-    // const addMessage = document.getElementById('add-message');
-    // if (addMessage) {
-    //     addMessage.addEventListener('submit', newMessage);
-    // }
-    //
-    // const loginForm = document.getElementById('login');
-    // if (loginForm) {
-    //     loginForm.addEventListener('submit', connect);
-    // }
-    //
-    // const editForm = document.getElementById('edit-message-modal');
-    // if (editForm) {
-    //     editForm.addEventListener('submit', editMessage);
-    // }
-    //
-    // const exportDocButton = document.getElementById('export');
-    // if (exportDocButton) {
-    //     exportDocButton.addEventListener('click', (event: Event) => {
-    //         event.preventDefault();
-    //
-    //         let md = ``;
-    //         const exportationElement = document.getElementById('export-code') as HTMLElement;
-    //         if (exportationElement) {
-    //             for (let i = 0; i < appStorage.messages.length; i++) {
-    //                 const message: TemplateMessage = appStorage.messages[i];
-    //                 if (message) {
-    //                     md += message.toMarkdown();
-    //                 }
-    //             }
-    //
-    //             exportationElement.innerHTML = md;
-    //         }
-    //     });
-    // }
-
-    // const createProject = document.getElementById('create-project') as HTMLElement;
-    // if (createProject) {
-    //     createProject.addEventListener('submit', (event: Event) => {
-    //         event.preventDefault();
-    //
-    //         const projectName = document.getElementById('project-name') as HTMLInputElement;
-    //         if (projectName) {
-    //             if (projectName.value.length > 0) {
-    //                 const project = new Project(projectName.value);
-    //                 appStorage.projects.push(project);
-    //                 appStorage.currentProject = project;
-    //
-    //                 // TODO: make the app accessible
-    //             }
-    //
-    //         }
-    //     });
-    // }
-}
-
-/**
- * Create a new message and display a confirmation notification
- * @param event 
- */
-// function newMessage(event: Event) {
-//     event.preventDefault();
-//
-//     const name = (document.getElementById('message-name') as HTMLInputElement).value;
-//     const args = contentEditor?.state.doc.toString() ?? "";
-//     const type = (document.getElementById('message-type') as HTMLSelectElement).value === 'request' ? TemplateMessageType.REQUEST : TemplateMessageType.RESPONSE;
-//
-//     const templateMessage = new TemplateMessage(name, args, type);
-//
-//     if (templateMessage && templateMessage.created) {
-//         appStorage.messages.push(templateMessage);
-//         appStorage.save();
-//         modalsManager.closeAllModals();
-//     }
-//
-//     new Notification(`The message has been added.`, NotificationType.SUCCESS);
-// }
-
-// function editMessage(event: Event) {
-//     event.preventDefault();
-//
-//     const name = (document.getElementById('edit-message-name') as HTMLInputElement).value;
-//     const args = editContentEditor?.state.doc.toString() ?? "";
-//     const type = (document.getElementById('edit-message-type') as HTMLSelectElement).value === 'request' ? TemplateMessageType.REQUEST : TemplateMessageType.RESPONSE;
-//     const strId = (document.getElementById("edit-message-modal") as HTMLElement).getAttribute("data-message");
-//     if (strId) {
-//         const id = parseInt(strId);
-//         const message = appStorage.messages[id];
-//         if (message) {
-//             message.edit(name, args, type);
-//         }
-//     }
-// }
-
-/**
- * Connect the websocket server using the right client
- * @param event 
- * @returns 
- */
-// function connect(event: Event) {
-//     event.preventDefault();
-//
-//     const roomName = (document.getElementById('room-name') as HTMLInputElement).value;
-//     const address = (document.getElementById('address') as HTMLInputElement).value;
-//     const username = (document.getElementById('username') as HTMLInputElement).value;
-//     const clientName = (document.getElementById('client') as HTMLSelectElement).value;
-//
-//     if (!roomName || !address || !username || !clientName) {
-//         new Notification(`Please fill completely the connect form!`, NotificationType.ERROR);
-//         return;
-//     }
-//
-//     switch (clientName) {
-//         case 'colyseus':
-//             setClient(new ColyseusClient(address, roomName, username));
-//             break;
-//         case 'socketio':
-//             setClient(new SocketIOClient(address, username));
-//             break;
-//         case 'websocket':
-//             setClient(new WebSocketClient(address, username));
-//             break;
-//     }
-//
-//     if (client && client.connected) {
-//         const templateMessages = document.getElementById('template-messages') as HTMLElement;
-//         if (templateMessages) {
-//             templateMessages.classList.remove('disconnected');
-//         }
-//
-//         appStorage.save();
-//     }
-// }

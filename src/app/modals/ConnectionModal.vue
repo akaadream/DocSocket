@@ -15,9 +15,13 @@ const service = ref("colyseus");
 const roomName = ref("");
 const username = ref("");
 
+/**
+ * Connect the user on the server using the right service
+ */
 function connect() {
     if (!roomName.value || !service.value || !address.value || !username.value) {
         // TODO: add a new notification
+        console.warn("Can't connect. Please correctly fill the form.");
         return;
     }
 
@@ -37,7 +41,7 @@ function connect() {
             break;
     }
 
-    if (client && client.connected) {
+    if (client) {
         globalStore.setClient(client);
         globalStore.notifications.push(new Notification("Successfully connected on the service!", NotificationType.SUCCESS));
         console.log("notification pushed");
