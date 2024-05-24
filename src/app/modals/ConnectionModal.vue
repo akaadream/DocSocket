@@ -5,10 +5,12 @@ import {useGlobalStore} from "../storages/global.ts";
 import {ColyseusClient} from "../../clients/ColyseusClient.ts";
 import {WebSocketClient} from "../../clients/WebSocketClient.ts";
 import {SocketIOClient} from "../../clients/SocketIOClient.ts";
-import {Notification} from "../../utils/Notification.ts";
 import {NotificationType} from "../../utils/Notification.ts";
 import {DocSocketClient} from "../../clients/DocSocketClient.ts";
 import {useModalsStore} from "../storages/modals.ts";
+
+const globalStore = useGlobalStore();
+const modalsStore = useModalsStore();
 
 const address = ref("");
 const service = ref("colyseus");
@@ -20,13 +22,10 @@ const username = ref("");
  */
 function connect() {
     if (!roomName.value || !service.value || !address.value || !username.value) {
-        // TODO: add a new notification
-        console.warn("Can't connect. Please correctly fill the form.");
+        globalStore.appendNotification("Please, fill the connection form correctly!", NotificationType.ERROR);
         return;
     }
 
-    const globalStore = useGlobalStore();
-    const modalsStore = useModalsStore();
     let client: DocSocketClient|null = null;
 
     switch (service.value) {
@@ -42,13 +41,12 @@ function connect() {
     }
 
     if (client) {
-        globalStore.setClient(client);
-        globalStore.notifications.push(new Notification("Successfully connected on the service!", NotificationType.SUCCESS));
-        console.log("notification pushed");
-        // TODO: save the app local storage
+        globalStore.currentProject?.setClient(client);
+        globalStore.save();
+        globalStore.appendNotification("Successfully connected on the service!", NotificationType.SUCCESS);
     }
     else {
-
+        globalStore.appendNotification("Unexpected error encountered!", NotificationType.ERROR);
     }
 
     modalsStore.closeModal();

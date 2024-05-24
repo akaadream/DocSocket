@@ -14,14 +14,13 @@ import {Project} from "./Project.ts";
 import ModalButton from "./components/ModalButton.vue";
 import Message from "./components/Message.vue";
 import {MessageType} from "../utils/Message.ts";
+import Icon from "./components/Icon.vue";
 
 const globalStore = useGlobalStore();
 const modalsStore = useModalsStore();
 
-watch(globalStore.currentProject, (newProject, oldProject) => {
-    console.log("old:", oldProject);
-    console.log("new:", newProject);
-});
+const currentProject = globalStore.currentProject;
+const client = currentProject?.client;
 
 /**
  * Clear the content from the local storage
@@ -46,7 +45,7 @@ function handleKeyboard(event: KeyboardEvent) {
  * When the app is mounted, load the local storage data
  */
 onMounted(() => {
-    globalStore.appStorage.load();
+    globalStore.load();
 });
 </script>
 
@@ -65,7 +64,7 @@ onMounted(() => {
         <CreateProjectModal />
         <ConnectionModal />
         <MessageModal />
-        <EditMessageModal />
+        <EditMessageModal v-if="currentProject" :message="currentProject" />
         <ExportModal />
     </div>
 
@@ -77,43 +76,44 @@ onMounted(() => {
                 </div>
 
                 <div v-if="globalStore.currentProject" id="connection" class="connection-status" :class="{
-                    'connected': globalStore.client && globalStore.client.connected
+                    'connected': globalStore.currentProject.client && globalStore.currentProject.client.connected
                 }">
-                    <span v-if="globalStore.client && globalStore.client.connected" id="connection-text" class="connection-text">Connected</span>
+                    <span v-if="globalStore.currentProject.client && globalStore.currentProject.client.connected" id="connection-text" class="connection-text">Connected</span>
                     <span v-else id="connection-text" class="connection-text">Disconnected</span>
                     <span class="connection-indicator"></span>
                 </div>
             </div>
 
             <div class="column is-right">
-                <ModalButton label="New project" modal-name="project-modal" icon="fa-plus" />
+                <ModalButton label="New project" modal-name="project-modal" icon="add" />
             </div>
         </div>
 
         <div v-if="globalStore.currentProject" class="buttons spaced">
-            <ModalButton v-if="!globalStore.client" label="Connect to the server" modal-name="connection-modal" icon="fa-right-to-bracket" />
-            <ModalButton label="Add a new message" modal-name="message-modal" icon="fa-plus" />
+            <ModalButton v-if="globalStore.currentProject" label="Connect to the server" modal-name="connection-modal" icon="login" />
+            <ModalButton label="Add a new message" modal-name="message-modal" icon="add_circle" />
         </div>
 
         <div v-if="globalStore.currentProject" class="columns">
             <div class="column">
                 <div id="template-messages" class="output" :class="{
-                    'disconnected': !globalStore.client || !globalStore.client.connected
+                    'disconnected': !(globalStore.currentProject as Project)?.client?.connected
                 }">
-                    <TemplateMessage v-for="message in (globalStore.currentProject as Project).messages" :args="message.args" :name="message.name" />
+                    <TemplateMessage
+                        v-for="message in (globalStore.currentProject as Project).messages"
+                        :identifier="message.id"
+                        :args="message.args"
+                        :name="message.name"
+                        :type="message.type"
+                    />
                 </div>
 
                 <div class="buttons">
-                    <ModalButton label="Export documentation" modal-name="export-modal" icon="fa-file-export" />
+                    <ModalButton label="Export documentation" modal-name="export-modal" icon="share" />
 
                     <button id="reset" class="button is-danger" @click="deleteLocalStorage">
-                        <span class="icon">
-                            <i class="fa-solid fa-trash"></i>
-                        </span>
-
-                            <span class="text">
-                            Delete local storage
-                        </span>
+                        <Icon name="delete" />
+                        Delete local storage
                     </button>
                 </div>
             </div>

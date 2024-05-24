@@ -8,7 +8,7 @@ const modalsStore = useModalsStore();
 <template>
     <button @click="modalsStore.open(props.modalName)" class="button expand-button modal-opening-button">
         <span class="icon">
-            <i class="fas" :class="props.icon"></i>
+            <span class="material-icons">{{ props.icon }}</span>
         </span>
 
         <span class="text">

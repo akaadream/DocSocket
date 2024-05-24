@@ -4,8 +4,12 @@ export class SocketIOClient extends DocSocketClient {
     readonly username: string;
 
     constructor(_address: string, username: string) {
-        super();
+        super(_address);
 
         this.username = username;
+    }
+
+    public service(): string {
+        return "socketio";
     }
 }

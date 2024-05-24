@@ -19,6 +19,7 @@
     "@codemirror/state": "^6.4.1",
     "@codemirror/theme-one-dark": "^6.1.2",
     "@codemirror/view": "^6.26.3",
+    "@material-design-icons/font": "^0.14.13",
     "@types/turndown": "^5.0.4",
     "@vitejs/plugin-vue": "^5.0.4",
     "bulma": "^1.0.0",

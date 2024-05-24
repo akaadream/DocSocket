@@ -1,3 +1,4 @@
+import '@material-design-icons/font';
 import 'bulma/css/bulma.css';
 import './style.css';
 import { EditorView, basicSetup } from 'codemirror';
@@ -44,13 +45,5 @@ export function recreateEditEditor(content?: string) {
             }),
             parent: editMessageEditorContent
         });
-    }
-}
-
-export function deleteChildrenOf(element: HTMLElement) {
-    while (element.firstChild) {
-        if (element.lastChild) {
-            element.removeChild(element.lastChild);
-        }
     }
 }

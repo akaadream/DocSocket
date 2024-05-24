@@ -2,8 +2,8 @@
 import Modal from "./Modal.vue";
 import {useModalsStore} from "../storages/modals.ts";
 import {useGlobalStore} from "../storages/global.ts";
-import {Project} from "../Project.ts";
 import {ref} from "vue";
+import {NotificationType} from "../../utils/Notification.ts";
 
 const globalStore = useGlobalStore();
 const modalsStore = useModalsStore();
@@ -11,13 +11,12 @@ const modalsStore = useModalsStore();
 const projectName = ref("");
 
 function createNewProject() {
-    // TODO: create a new project
-    if (projectName) {
-        const project = new Project(projectName.value);
-        globalStore.projects.push(project);
-        globalStore.currentProject = project;
-
+    if (projectName.value) {
+        globalStore.createProject(projectName.value);
         modalsStore.closeModal();
+    }
+    else {
+        globalStore.appendNotification("Please enter a project name!", NotificationType.ERROR);
     }
 }
 </script>

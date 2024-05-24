@@ -3,10 +3,13 @@ import { Message, MessageType } from "../utils/Message";
 export class DocSocketClient {
     readonly messages: Message[];
     connected: boolean;
+    address: string;
     
-    constructor() {
+    constructor(address: string) {
         this.messages = [];
         this.connected = false;
+
+        this.address = address;
     }
 
     public request(name: string, args: string): void {
@@ -19,5 +22,16 @@ export class DocSocketClient {
 
     public message(_name: string): void {
 
+    }
+
+    public service(): string {
+        return "client";
+    }
+
+    public toJson() {
+        return {
+            'address': this.address,
+            'service': this.service()
+        }
     }
 }

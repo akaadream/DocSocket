@@ -5,7 +5,8 @@ import { json } from '@codemirror/lang-json';
 import {oneDark} from "@codemirror/theme-one-dark";
 import {basicSetup} from "codemirror";
 
-const code = ref("");
+const props = defineProps(['code']);
+const code = ref(props.code);
 const extensions = [basicSetup, json(), oneDark];
 </script>
 

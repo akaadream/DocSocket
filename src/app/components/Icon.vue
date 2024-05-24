@@ -3,5 +3,5 @@ const props = defineProps(['name'])
 </script>
 
 <template>
-  <i class="fas icon" :class="props.name"></i>
+  <span class="material-icons">{{ props.name }}</span>
 </template>

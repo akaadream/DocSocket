@@ -5,7 +5,7 @@ export class WebSocketClient extends DocSocketClient {
     readonly socket: WebSocket;
 
     constructor(address: string, username: string) {
-        super();
+        super(address);
 
         this.username = username;
         this.socket = new WebSocket(address);
@@ -28,5 +28,9 @@ export class WebSocketClient extends DocSocketClient {
 
     public request(): void {
         
+    }
+
+    public service(): string {
+        return "websocket";
     }
 }

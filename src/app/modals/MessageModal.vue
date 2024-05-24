@@ -19,9 +19,14 @@ function createMessage() {
         return;
     }
 
-    const templateMessage = new TemplateMessage(messageName.value, messageArgs.value, messageType.value === 'request' ? TemplateMessageType.REQUEST : TemplateMessageType.RESPONSE);
+    const templateMessage = new TemplateMessage(
+        globalStore.currentProject.messages.length,
+        messageName.value,
+        messageArgs.value,
+        messageType.value === 'request' ? TemplateMessageType.REQUEST : TemplateMessageType.RESPONSE);
+
     globalStore.currentProject.messages.push(templateMessage);
-    globalStore.appStorage.save();
+    globalStore.save();
     modalsStore.closeModal();
 }
 
@@ -58,7 +63,7 @@ function onUpdate(value: string) {
                 <label class="label">Content</label>
 
                 <div class="control">
-                    <VueCodemirror @update:modelValue="onUpdate" />
+                    <VueCodemirror @update:modelValue="onUpdate" code="" />
                 </div>
             </div>
 

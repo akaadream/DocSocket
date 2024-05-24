@@ -10,6 +10,31 @@ html, body {
     height: 100%;
 }
 
+.material-icons {
+    font-family: 'Material Icons', emoji;
+    font-weight: normal;
+    font-style: normal;
+    font-size: 24px;  /* Preferred icon size */
+    display: inline-block;
+    line-height: 1;
+    text-transform: none;
+    letter-spacing: normal;
+    word-wrap: normal;
+    white-space: nowrap;
+    direction: ltr;
+
+    /* Support for all WebKit browsers. */
+    -webkit-font-smoothing: antialiased;
+    /* Support for Safari and Chrome. */
+    text-rendering: optimizeLegibility;
+
+    /* Support for Firefox. */
+    -moz-osx-font-smoothing: grayscale;
+
+    /* Support for IE. */
+    font-feature-settings: 'liga';
+}
+
 .app-content {
     margin-left: 260px;
     padding: 24px;
@@ -314,8 +339,6 @@ form:not(:last-child) {
     background-color: #000;
 
     overflow-y: auto;
-    scrollbar-width: 8px;
-    scrollbar-color: #333;
 }
 
 ::-webkit-scrollbar {
@@ -336,19 +359,42 @@ form:not(:last-child) {
 }
 
 .nav-title {
-    padding-left: 12px;
+    padding-left: 8px;
 }
 
 .nav-link {
-    display: block;
-    padding: 8px 12px;
+    display: flex;
+    justify-content: space-between;
+    overflow: hidden;
+    align-items: center;
+    padding: 4px 8px;
     border-radius: 8px;
 
     color: #bbb;
     transition: 0.2s;
 }
 
-.nav-link:hover {
+.nav-link:hover,
+.nav-link.is-selected{
     background-color: #141416;
     color: white;
+}
+
+.nav-link .button {
+    transform: translateX(30px);
+    pointer-events: none;
+    opacity: 0;
+    transition: 0.2s;
+    height: initial !important;
+    align-items: initial !important;
+}
+
+.nav-link:not(:last-child) {
+    margin-bottom: 4px;
+}
+
+.nav-link:hover .button {
+    transform: translateX(0);
+    opacity: 1;
+    pointer-events: auto;
 }
