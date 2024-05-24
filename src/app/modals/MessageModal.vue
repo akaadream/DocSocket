@@ -1,11 +1,11 @@
 <script setup lang="ts">
 import Modal from "./Modal.vue";
-import {onMounted, Ref, ref} from "vue";
+import {ref} from "vue";
 import {TemplateMessage, TemplateMessageType} from "../../utils/TemplateMessage.ts";
 import {useGlobalStore} from "../storages/global.ts";
 import {useModalsStore} from "../storages/modals.ts";
 import VueCodemirror from "../components/VueCodemirror.vue";
-import {ViewUpdate} from "@codemirror/view";
+import {NotificationType} from "../../utils/Notification.ts";
 
 const globalStore = useGlobalStore();
 const modalsStore = useModalsStore();
@@ -25,9 +25,20 @@ function createMessage() {
         messageArgs.value,
         messageType.value === 'request' ? TemplateMessageType.REQUEST : TemplateMessageType.RESPONSE);
 
-    globalStore.currentProject.messages.push(templateMessage);
-    globalStore.save();
-    modalsStore.closeModal();
+    if (templateMessage) {
+        globalStore.currentProject.messages.push(templateMessage);
+
+        if (templateMessage.type === TemplateMessageType.REQUEST) {
+            globalStore.currentProject.client?.message(templateMessage.name);
+        }
+
+        globalStore.appendNotification("The template message has successfully been added!", NotificationType.SUCCESS);
+        globalStore.save();
+        modalsStore.closeModal();
+    }
+    else {
+        globalStore.appendNotification("Unexpected error while creating the template message!", NotificationType.ERROR);
+    }
 }
 
 function onUpdate(value: string) {

@@ -12,6 +12,14 @@ export class DocSocketClient {
         this.address = address;
     }
 
+    public connect() {
+
+    }
+
+    public disconnect() {
+
+    }
+
     public request(name: string, args: string): void {
         this.messages.push(new Message(name, args, MessageType.REQUEST));
     }

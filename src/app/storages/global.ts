@@ -7,6 +7,7 @@ import {DocSocketClient} from "../../clients/DocSocketClient.ts";
 import {ColyseusClient} from "../../clients/ColyseusClient.ts";
 import {SocketIOClient} from "../../clients/SocketIOClient.ts";
 import {WebSocketClient} from "../../clients/WebSocketClient.ts";
+import {TemplateMessage} from "../../utils/TemplateMessage.ts";
 
 // Projects key
 const PROJECTS_KEY = "projects";
@@ -22,7 +23,6 @@ export const useGlobalStore = defineStore('global', () => {
     const projects: Ref<Project[]> = ref([]);
     const currentProject: Ref<Project|null> = ref(null);
     const notifications: Ref<Notification[]> = ref([]);
-    const messages: Ref<Message[]> = ref([]);
 
     const defaultAddress = ref("ws://localhost:2567");
     const defaultRoom = ref("");
@@ -48,6 +48,7 @@ export const useGlobalStore = defineStore('global', () => {
             const json = JSON.parse(data);
             if (json && Array.isArray(json)) {
                 json.forEach((element) => {
+                    console.log("element", element);
                     if (element.name &&
                         element.slug &&
                         element.messages) {
@@ -177,19 +178,71 @@ export const useGlobalStore = defineStore('global', () => {
         save();
     }
 
+    /**
+     * Return true if the client is connected
+     */
+    function clientConnected(): boolean {
+        if (!currentProject) {
+            return false;
+        }
+
+        if (!currentProject.value?.client) {
+            return false;
+        }
+
+        return currentProject.value?.client.connected;
+    }
+
+    function disconnectFromClient() {
+        currentProject.value?.client?.disconnect();
+    }
+
+    /**
+     * Get an array containing all the output messages of the app
+     */
+    function getMessages(): Message[] {
+        if (currentProject.value && currentProject.value?.client) {
+            return currentProject.value?.client?.messages;
+        }
+
+        return [];
+    }
+
+    /**
+     * Get the documentation we want to export as a string
+     */
+    function getExport(): string {
+        if (!currentProject.value) {
+            return '';
+        }
+
+        let exportCode = ``;
+        for (let i = 0; i < currentProject.value?.messages.length; i++) {
+            const message: TemplateMessage = currentProject.value?.messages[i];
+            if (message) {
+                exportCode += message.toMarkdown();
+            }
+        }
+
+        return exportCode;
+    }
+
     return {
         currentProject,
         defaultAddress,
         defaultRoom,
         defaultService,
         defaultUsername,
-        messages,
         notifications,
         projects,
 
         appendNotification,
+        clientConnected,
         createProject,
         deleteProject,
+        disconnectFromClient,
+        getExport,
+        getMessages,
         load,
         save,
         selectProject,

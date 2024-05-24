@@ -1,45 +1,72 @@
 import { Client, Room } from "colyseus.js";
-import { Notification, NotificationType } from "../utils/Notification";
+import { NotificationType } from "../utils/Notification";
 import { DocSocketClient } from "./DocSocketClient";
+import {useGlobalStore} from "../app/storages/global.ts";
 
 export class ColyseusClient extends DocSocketClient {
-    readonly client: Client;
     readonly username: string;
     readonly roomName: string;
-    currentRoom!: Room;
+    client: Client|null;
+    currentRoom: Room|null;
 
     constructor(address: string, roomName: string, username: string) {
         super(address);
 
-        this.client = new Client(address);
+        this.client = null;
+        this.currentRoom = null;
         this.username = username;
         this.roomName = roomName;
-        this.client.create(roomName, {
-            username: username
+
+        this.connect();
+    }
+
+    public connect() {
+        const store = useGlobalStore();
+
+        this.client = new Client(this.address);
+        this.client?.create(this.roomName, {
+            username: this.username
         }).then((room: Room) => {
+            console.log("");
             this.currentRoom = room;
             this.connected = true;
 
-            new Notification(`You've successfully been connected to the ${roomName} room.`, NotificationType.SUCCESS);
+            store.appendNotification(`You've successfully been connected to the ${this.roomName} room.`, NotificationType.SUCCESS);
+            dispatchEvent(new Event('client:room_joined'));
         }).catch(() => {
-            new Notification(`Impossible to create or join a ${roomName} room.`, NotificationType.ERROR);
+            store.appendNotification(`Impossible to create or join a ${this.roomName} room.`, NotificationType.ERROR);
         });
     }
 
+    public disconnect() {
+        if (!this.client || !this.currentRoom) {
+            return;
+        }
+
+        const store = useGlobalStore();
+        this.currentRoom?.leave(true);
+        this.currentRoom = null;
+        this.client = null;
+        store.appendNotification(`You've successfully been disconnected.`, NotificationType.SUCCESS);
+    }
+
     public request(name: string, args: string): void {
-        this.currentRoom.send(name, args);
+        this.currentRoom?.send(name, args);
         super.request(name, args);
     }
 
     public message(name: string) {
         if (!name) {
+            console.warn("no name");
             return;
         }
 
         if (!this.currentRoom) {
+            console.warn("no current room");
             return;
         }
 
+        console.log(`message ${name} listened`);
         this.currentRoom.onMessage(name, (response: any) => {
             if (response instanceof Object && response.message) {
                 this.reponse(name, JSON.parse(response.message));

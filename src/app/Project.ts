@@ -1,4 +1,4 @@
-import { TemplateMessage } from "../utils/TemplateMessage";
+import {TemplateMessage, TemplateMessageType} from "../utils/TemplateMessage";
 import {slugify} from "../utils/Slugify.ts";
 import {DocSocketClient} from "../clients/DocSocketClient.ts";
 
@@ -17,11 +17,31 @@ export class Project {
         if (messages && Array.isArray(messages)) {
             let i = 0;
             messages.forEach((element) => {
-                if (element.name && element.args && element.type) {
-                    this.messages.push(new TemplateMessage(i, element.name, element.args, element.type));
-                    i++;
+                if (element.name &&
+                    element.args &&
+                    element.type !== undefined) {
+                    const message = new TemplateMessage(i, element.name, element.args, element.type);
+                    if (message) {
+                        this.messages.push(message);
+                        i++;
+                    }
                 }
             });
+        }
+
+        addEventListener('client:room_joined', () => {
+            this.listen();
+        });
+    }
+
+    /**
+     * Listen the responses
+     */
+    listen() {
+        for (const message of this.messages) {
+            if (message.type === TemplateMessageType.RESPONSE) {
+                this.client?.message(message.name);
+            }
         }
     }
 

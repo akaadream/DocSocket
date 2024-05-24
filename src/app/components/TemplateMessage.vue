@@ -4,6 +4,7 @@ import {useGlobalStore} from "../storages/global.ts";
 import {TemplateMessageType} from "../../utils/TemplateMessage.ts";
 import ConfirmModal from "../modals/ConfirmModal.vue";
 import {useModalsStore} from "../storages/modals.ts";
+import {NotificationType} from "../../utils/Notification.ts";
 
 const globalStore = useGlobalStore();
 const modalsStore = useModalsStore();
@@ -22,38 +23,38 @@ function test() {
     if (props.type === TemplateMessageType.REQUEST) {
         currentProject?.client?.request(props.name, props.args);
     }
-    else {
-        currentProject?.client?.message(props.name);
-    }
 }
 
 function edit() {
     // TODO: display edit modal with this message as default values
     // don't forget
-
 }
 
 function remove() {
     modalsStore.open(`message-template-${props.identifier}`);
-    // if (confirm("Do you really want to delete this message?")) {
-    //     globalStore.currentProject?.tryDelete(props.name);
-    //     // TODO: push notification
-    // }
+}
+
+function confirm() {
+    globalStore.currentProject?.tryDelete(props.name);
+    globalStore.appendNotification("The message has been successfully deleted!", NotificationType.SUCCESS);
 }
 </script>
 
 <template>
-    <ConfirmModal :id="`message-template-${props.identifier}`" :message-name="props.name" />
+    <ConfirmModal @confirm="confirm" :id="`message-template-${props.identifier}`" :message-name="props.name" />
 
     <div :id="props.identifier" class="message-template">
         <div class="message-template-infos">
-            <div class="message-template-name tag is-medium is-link">
+            <div class="message-template-name tag is-medium" :class="{
+                'is-warning': props.type === TemplateMessageType.REQUEST,
+                'is-success': props.type === TemplateMessageType.RESPONSE
+            }">
                 {{ props.name }}
             </div>
         </div>
 
         <div class="buttons has-addons">
-            <button @click.prevent.stop="test" class="button is-dark">
+            <button v-if="props.type === TemplateMessageType.REQUEST" @click.prevent.stop="test" class="button is-dark">
                 <Icon name="play_arrow" aria-hidden="true" />
             </button>
 

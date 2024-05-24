@@ -156,6 +156,8 @@ form:not(:last-child) {
     background-color: var(--bulma-scheme-main-bis);
     border-end-start-radius: var(--bulma-message-header-radius);
     border-end-end-radius: var(--bulma-message-header-radius);
+
+    overflow-x: auto;
 }
 
 .message:is(.opened)

@@ -14,6 +14,8 @@ export interface MessageProps {
 }
 
 const props = defineProps<MessageProps>();
+console.log("content");
+console.log(props.content);
 const opened = ref(false);
 const highlighted = hljs.highlight(props.content, {
     language: 'json'
@@ -25,7 +27,9 @@ function toggleOpen() {
 </script>
 
 <template>
-    <div class="message">
+    <div class="message" :class="{
+        'opened': opened
+    }">
         <div class="message-header" @click="toggleOpen">
             <div class="message-name tag is-medium" :class="{
                 'is-success': props.type === MessageType.RESPONSE,
@@ -40,16 +44,12 @@ function toggleOpen() {
             </div>
 
             <div class="message-dropdown">
-                <Icon name="fa-caret-down" />
+                <Icon name="keyboard_arrow_down" />
             </div>
         </div>
 
         <div class="message-content">
-            <pre>
-                <code class="language-json">
-                    {{ highlighted }}
-                </code>
-            </pre>
+            <pre v-html="highlighted.value" class="language-json" />
         </div>
     </div>
 </template>
