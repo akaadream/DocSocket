@@ -4,12 +4,7 @@ export enum NotificationType {
     DEFAULT,
 }
 
-export class Notification {
+export interface Notification {
     content: string;
     type: NotificationType;
-
-    constructor(content: string, type: NotificationType) {
-        this.content = content;
-        this.type = type;
-    }
 }

@@ -1,7 +1,7 @@
 import { Message, MessageType } from "../utils/Message";
 
 export class DocSocketClient {
-    readonly messages: Message[];
+    messages: Message[];
     connected: boolean;
     address: string;
     
@@ -24,7 +24,7 @@ export class DocSocketClient {
         this.messages.push(new Message(name, args, MessageType.REQUEST));
     }
 
-    protected reponse(name: string, obj: object): void {
+    protected response(name: string, obj: object): void {
         this.messages.push(new Message(name, JSON.stringify(obj, null, 2), MessageType.RESPONSE));
     }
 

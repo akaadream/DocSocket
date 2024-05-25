@@ -1,4 +1,4 @@
-import {defineStore} from "pinia";
+import {defineStore, Store} from "pinia";
 import {Ref, ref} from "vue";
 import {Project} from "../Project.ts";
 import {Notification, NotificationType} from "../../utils/Notification.ts";
@@ -23,6 +23,8 @@ export const useGlobalStore = defineStore('global', () => {
     const projects: Ref<Project[]> = ref([]);
     const currentProject: Ref<Project|null> = ref(null);
     const notifications: Ref<Notification[]> = ref([]);
+
+    const storeProjects: Ref<Store[]> = ref([]);
 
     const defaultAddress = ref("ws://localhost:2567");
     const defaultRoom = ref("");
@@ -182,17 +184,12 @@ export const useGlobalStore = defineStore('global', () => {
      * Return true if the client is connected
      */
     function clientConnected(): boolean {
-        if (!currentProject) {
-            return false;
-        }
-
-        if (!currentProject.value?.client) {
-            return false;
-        }
-
-        return currentProject.value?.client.connected;
+        return currentProject.value?.client?.connected ?? false;
     }
 
+    /**
+     * Disconnect the user from the service
+     */
     function disconnectFromClient() {
         currentProject.value?.client?.disconnect();
     }
@@ -201,11 +198,7 @@ export const useGlobalStore = defineStore('global', () => {
      * Get an array containing all the output messages of the app
      */
     function getMessages(): Message[] {
-        if (currentProject.value && currentProject.value?.client) {
-            return currentProject.value?.client?.messages;
-        }
-
-        return [];
+        return currentProject.value?.client?.messages ?? [];
     }
 
     /**
@@ -235,6 +228,7 @@ export const useGlobalStore = defineStore('global', () => {
         defaultUsername,
         notifications,
         projects,
+        storeProjects,
 
         appendNotification,
         clientConnected,

@@ -69,7 +69,7 @@ export class ColyseusClient extends DocSocketClient {
         console.log(`message ${name} listened`);
         this.currentRoom.onMessage(name, (response: any) => {
             if (response instanceof Object && response.message) {
-                this.reponse(name, JSON.parse(response.message));
+                this.response(name, JSON.parse(response.message));
             }
         });
     }
