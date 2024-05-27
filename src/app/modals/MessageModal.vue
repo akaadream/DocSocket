@@ -1,13 +1,15 @@
 <script setup lang="ts">
 import Modal from "./Modal.vue";
 import {ref} from "vue";
-import {TemplateMessage, TemplateMessageType} from "../../utils/TemplateMessage.ts";
+import {TemplateMessageType} from "../../utils/TemplateMessage.ts";
 import {useGlobalStore} from "../storages/global.ts";
 import {useModalsStore} from "../storages/modals.ts";
 import VueCodemirror from "../components/VueCodemirror.vue";
 import {NotificationType} from "../../utils/Notification.ts";
+import {useProjectStore} from "../storages/project.ts";
 
 const globalStore = useGlobalStore();
+const projectStore = useProjectStore();
 const modalsStore = useModalsStore();
 
 const messageName = ref("");
@@ -15,25 +17,17 @@ const messageType = ref("request");
 const messageArgs = ref("");
 
 function createMessage() {
-    if (!messageName.value || !messageArgs.value || !messageType.value || !globalStore.currentProject) {
+    if (!messageName.value || !messageArgs.value || !messageType.value || !projectStore.selected()) {
         return;
     }
 
-    const templateMessage = new TemplateMessage(
-        globalStore.currentProject.messages.length,
+    const message = projectStore.addTemplate(
         messageName.value,
         messageArgs.value,
         messageType.value === 'request' ? TemplateMessageType.REQUEST : TemplateMessageType.RESPONSE);
 
-    if (templateMessage) {
-        globalStore.currentProject.messages.push(templateMessage);
-
-        if (templateMessage.type === TemplateMessageType.REQUEST) {
-            globalStore.currentProject.client?.message(templateMessage.name);
-        }
-
+    if (message) {
         globalStore.appendNotification("The template message has successfully been added!", NotificationType.SUCCESS);
-        globalStore.save();
         modalsStore.closeModal();
     }
     else {

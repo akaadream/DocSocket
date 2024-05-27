@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import {ref} from "vue";
 import Modal from "./Modal.vue";
 import {useGlobalStore} from "../storages/global.ts";
 import {ColyseusClient} from "../../clients/ColyseusClient.ts";
@@ -8,40 +7,39 @@ import {SocketIOClient} from "../../clients/SocketIOClient.ts";
 import {NotificationType} from "../../utils/Notification.ts";
 import {DocSocketClient} from "../../clients/DocSocketClient.ts";
 import {useModalsStore} from "../storages/modals.ts";
+import {useProjectStore} from "../storages/project.ts";
 
 const globalStore = useGlobalStore();
+const projectStore = useProjectStore();
 const modalsStore = useModalsStore();
-
-const address = ref("");
-const service = ref("colyseus");
-const roomName = ref("");
-const username = ref("");
 
 /**
  * Connect the user on the server using the right service
  */
 function connect() {
-    if (!roomName.value || !service.value || !address.value || !username.value) {
+    if (!globalStore.defaultRoom || !globalStore.defaultService || !globalStore.defaultAddress || !globalStore.defaultUsername) {
         globalStore.appendNotification("Please, fill the connection form correctly!", NotificationType.ERROR);
         return;
     }
 
     let client: DocSocketClient|null = null;
 
-    switch (service.value) {
+    switch (globalStore.defaultService) {
         case 'colyseus':
-            client = new ColyseusClient(address.value, roomName.value, username.value);
+            client = new ColyseusClient(globalStore.defaultAddress, globalStore.defaultRoom, globalStore.defaultUsername);
             break;
         case 'socketio':
-            client = new SocketIOClient(address.value, username.value);
+            client = new SocketIOClient(globalStore.defaultAddress, globalStore.defaultUsername);
             break;
         case 'websocket':
-            client = new WebSocketClient(address.value, username.value);
+            client = new WebSocketClient(globalStore.defaultAddress, globalStore.defaultUsername);
             break;
     }
 
     if (client) {
-        globalStore.currentProject?.setClient(client);
+        projectStore.setClient(client);
+        // TODO: Maybe became useless
+        globalStore.updateDefault(globalStore.defaultAddress, globalStore.defaultService, globalStore.defaultRoom, globalStore.defaultUsername);
         globalStore.save();
         globalStore.appendNotification("Successfully connected on the service!", NotificationType.SUCCESS);
     }
@@ -62,7 +60,7 @@ function connect() {
                 <label class="label">Server address</label>
 
                 <div class="control">
-                    <input v-model="address" type="text" class="input" id="address" placeholder="ws(s)://">
+                    <input v-model="globalStore.defaultAddress" type="text" class="input" id="address" placeholder="ws(s)://">
                 </div>
             </div>
 
@@ -70,7 +68,7 @@ function connect() {
                 <label class="label">Service</label>
 
                 <div class="select">
-                    <select v-model="service" id="client">
+                    <select v-model="globalStore.defaultService" id="client">
                         <option value="colyseus">Colyseus</option>
                         <option value="socketio">Socket.io</option>
                         <option value="websocket">Web socket</option>
@@ -82,7 +80,7 @@ function connect() {
                 <label class="label">Room name</label>
 
                 <div class="control">
-                    <input v-model="roomName" type="text" id="room-name" class="input">
+                    <input v-model="globalStore.defaultRoom" type="text" id="room-name" class="input">
                 </div>
             </div>
 
@@ -90,7 +88,7 @@ function connect() {
                 <label class="label">Username</label>
 
                 <div class="control">
-                    <input v-model="username" type="text" id="username" class="input">
+                    <input v-model="globalStore.defaultUsername" type="text" id="username" class="input">
                 </div>
             </div>
 

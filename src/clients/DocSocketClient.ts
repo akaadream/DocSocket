@@ -1,12 +1,11 @@
-import { Message, MessageType } from "../utils/Message";
+import {MessageType} from "../utils/Message";
+import {useProjectStore} from "../app/storages/project.ts";
 
 export class DocSocketClient {
-    messages: Message[];
     connected: boolean;
     address: string;
     
     constructor(address: string) {
-        this.messages = [];
         this.connected = false;
 
         this.address = address;
@@ -21,11 +20,13 @@ export class DocSocketClient {
     }
 
     public request(name: string, args: string): void {
-        this.messages.push(new Message(name, args, MessageType.REQUEST));
+        const projectStore = useProjectStore();
+        projectStore.addMessage(name, args, MessageType.REQUEST);
     }
 
     protected response(name: string, obj: object): void {
-        this.messages.push(new Message(name, JSON.stringify(obj, null, 2), MessageType.RESPONSE));
+        const projectStore = useProjectStore();
+        projectStore.addMessage(name, JSON.stringify(obj, null, 2), MessageType.RESPONSE);
     }
 
     public message(_name: string): void {

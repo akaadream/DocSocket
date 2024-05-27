@@ -3,8 +3,10 @@ import Icon from "../components/Icon.vue";
 import {useGlobalStore} from "../storages/global.ts";
 import {useModalsStore} from "../storages/modals.ts";
 import ConfirmModal from "../modals/ConfirmModal.vue";
+import {useProjectStore} from "../storages/project.ts";
 
 const globalStore = useGlobalStore();
+const projectStore = useProjectStore();
 const modalsStore = useModalsStore();
 const props = defineProps(['projectName', 'projectSlug']);
 
@@ -25,7 +27,7 @@ function confirm() {
 <template>
     <ConfirmModal @confirm="confirm" :id="`project-${props.projectName}`" :message-name="props.projectName" />
     <a href="#" @click.prevent="selectProject" :data-project.attr="props.projectSlug" class="nav-link" :class="{
-        'is-selected': globalStore.currentProject ? globalStore.currentProject.name === projectName : false
+        'is-selected': projectStore.name === projectName
     }">
         <div class="is-flex is-align-content-center">
             <Icon style="margin-right: 8px" name="folder" />

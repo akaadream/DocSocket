@@ -5,10 +5,11 @@ import {TemplateMessageType} from "../../utils/TemplateMessage.ts";
 import ConfirmModal from "../modals/ConfirmModal.vue";
 import {useModalsStore} from "../storages/modals.ts";
 import {NotificationType} from "../../utils/Notification.ts";
+import {useProjectStore} from "../storages/project.ts";
 
 const globalStore = useGlobalStore();
+const projectStore = useProjectStore();
 const modalsStore = useModalsStore();
-const currentProject = globalStore.currentProject;
 
 export interface TemplateMessageProps {
     identifier: number;
@@ -21,7 +22,7 @@ const props = defineProps<TemplateMessageProps>();
 
 function test() {
     if (props.type === TemplateMessageType.REQUEST) {
-        currentProject?.client?.request(props.name, props.args);
+        projectStore.client?.request(props.name, props.args);
     }
 }
 
@@ -35,8 +36,12 @@ function remove() {
 }
 
 function confirm() {
-    globalStore.currentProject?.tryDelete(props.name);
-    globalStore.appendNotification("The message has been successfully deleted!", NotificationType.SUCCESS);
+    if (projectStore.deleteTemplate(props.name)) {
+        globalStore.appendNotification("The message has been successfully deleted!", NotificationType.SUCCESS);
+    }
+    else {
+        globalStore.appendNotification("The message template cannot be deleted!", NotificationType.ERROR);
+    }
 }
 </script>
 

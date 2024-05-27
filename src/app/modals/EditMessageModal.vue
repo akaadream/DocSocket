@@ -4,23 +4,25 @@ import Modal from "./Modal.vue";
 import VueCodemirror from "../components/VueCodemirror.vue";
 import {ref} from "vue";
 import {TemplateMessage, TemplateMessageType} from "../../utils/TemplateMessage.ts";
+import {useProjectStore} from "../storages/project.ts";
+import {NotificationType} from "../../utils/Notification.ts";
 
-export interface EditMessageProps {
-    message: TemplateMessage
-}
-
-const props = defineProps<EditMessageProps>();
+const props = defineProps<TemplateMessage>();
 
 const globalStore = useGlobalStore();
-const name = ref(props.message.name ?? "");
-const args = ref(props.message.args ?? "");
-const type = ref(TemplateMessageType[props.message.type] ?? TemplateMessageType.REQUEST);
+const projectStore = useProjectStore();
+const name = ref(props.name ?? "");
+const args = ref(props.args ?? "");
+const type = ref(TemplateMessageType[props.type] ?? TemplateMessageType.REQUEST);
 
 function editMessage() {
-    const message: TemplateMessage|undefined = globalStore.currentProject?.messages[props.message.id];
+    const message = projectStore.templates[props.id];
     if (message) {
-        message.edit(name.value, args.value, type.value === 'request' ? TemplateMessageType.REQUEST : TemplateMessageType.RESPONSE);
-        // TODO: push a notification
+        message.name = name.value;
+        message.args = args.value;
+        message.type = type.value === 'request' ? TemplateMessageType.REQUEST : TemplateMessageType.RESPONSE;
+
+        globalStore.appendNotification('The message template has been successfully edited!', NotificationType.SUCCESS);
     }
 }
 

@@ -10,16 +10,19 @@ import Notification from "./components/Notification.vue";
 import {useGlobalStore} from "./storages/global.ts";
 import {onMounted} from "vue";
 import TemplateMessage from "./components/TemplateMessage.vue";
-import {Project} from "./Project.ts";
 import ModalButton from "./components/ModalButton.vue";
 import Message from "./components/Message.vue";
 import Icon from "./components/Icon.vue";
+import {useProjectStore} from "./storages/project.ts";
+import {NotificationType} from "../utils/Notification.ts";
 
 const globalStore = useGlobalStore();
+const projectStore = useProjectStore();
 const modalsStore = useModalsStore();
 
 // TODO: some store elements seems not updating the page when they are modified like pushing a new output message
 // TODO: or when we want to detect if the client is disconnected or not
+console.log(projectStore.selected());
 
 /**
  * Clear the content from the local storage
@@ -27,6 +30,7 @@ const modalsStore = useModalsStore();
 function deleteLocalStorage() {
     if (confirm("Do you really want to clear the local storage?")) {
         localStorage.clear();
+        globalStore.appendNotification("Local storage has been successfully deleted.", NotificationType.SUCCESS);
     }
 }
 
@@ -45,6 +49,10 @@ function handleKeyboard(event: KeyboardEvent) {
  */
 onMounted(() => {
     globalStore.load();
+
+    addEventListener('client:room_joined', () => {
+        projectStore.listen();
+    });
 });
 </script>
 
@@ -63,8 +71,8 @@ onMounted(() => {
         <CreateProjectModal />
         <ConnectionModal />
         <MessageModal />
-        <EditMessageModal v-if="globalStore.currentProject" :message="globalStore.currentProject" />
-        <ExportModal v-if="globalStore.currentProject" :content="globalStore.getExport()" />
+        <EditMessageModal v-if="projectStore.connected() && projectStore.selectedMessage" :message="projectStore.selectedMessage" />
+        <ExportModal v-if="projectStore.selected()" :content="projectStore.documentation()" />
     </div>
 
     <div class="app-content" @keydown="handleKeyboard">
@@ -74,10 +82,10 @@ onMounted(() => {
                     Doc<span class="title-thin">ket</span>
                 </div>
 
-                <div v-if="globalStore.currentProject" id="connection" class="connection-status" :class="{
-                    'connected': globalStore.clientConnected()
+                <div v-if="projectStore.selected()" id="connection" class="connection-status" :class="{
+                    'connected': projectStore.connected()
                 }">
-                    <span v-if="globalStore.clientConnected()" id="connection-text" class="connection-text">Connected</span>
+                    <span v-if="projectStore.connected()" id="connection-text" class="connection-text">Connected</span>
                     <span v-else id="connection-text" class="connection-text">Disconnected</span>
                     <span class="connection-indicator"></span>
                 </div>
@@ -88,23 +96,24 @@ onMounted(() => {
             </div>
         </div>
 
-        <div v-if="globalStore.currentProject" class="buttons spaced">
-            <ModalButton v-if="!globalStore.clientConnected()" label="Connect to the server" modal-name="connection-modal" icon="login" />
-            <button id="disconnect" class="button" @click="globalStore.disconnectFromClient()">
+        <div v-if="projectStore.selected()" class="buttons spaced">
+            <ModalButton v-if="!projectStore.connected()" label="Connect to the server" modal-name="connection-modal" icon="login" />
+            <!-- TODO: seems not working -->
+            <button v-if="projectStore.connected()" id="disconnect" class="button" @click="projectStore.disconnect()">
                 <Icon name="logout" />
                 Disconnect from the server
             </button>
             <ModalButton label="Add a new message" modal-name="message-modal" icon="add_circle" />
         </div>
 
-        <div v-if="globalStore.currentProject" class="columns">
+        <div v-if="projectStore.selected()" class="columns">
             <div class="column">
                 <div id="template-messages" class="output" :class="{
-                    'disconnected': !globalStore.clientConnected()
+                    'disconnected': !projectStore.connected()
                 }">
                     <div class="subtitle is-5">Template messages</div>
                     <TemplateMessage
-                        v-for="message in (globalStore.currentProject as Project).messages"
+                        v-for="message in projectStore.templates"
                         :identifier="message.id"
                         :args="message.args"
                         :name="message.name"
@@ -126,8 +135,8 @@ onMounted(() => {
                 <div id="messages" class="output">
                     <div class="subtitle is-5">Output messages</div>
                     <Message
-                        v-if="globalStore.clientConnected()"
-                        v-for="message in globalStore.getMessages()"
+                        v-if="projectStore.connected()"
+                        v-for="message in projectStore.messages"
                         :content="message.content"
                         :name="message.name"
                         :type="message.type" />
