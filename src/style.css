@@ -373,6 +373,7 @@ form:not(:last-child) {
     background-color: #000;
 
     overflow-y: auto;
+    z-index: 99;
 }
 
 ::-webkit-scrollbar {
