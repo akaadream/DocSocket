@@ -142,6 +142,25 @@ export const useGlobalStore = defineStore('global', () => {
     }
 
     /**
+     * Delete a message from a specific project data
+     * @param projectName
+     * @param messageName
+     */
+    function deleteMessageFrom(projectName: string, messageName: string) {
+        for (const project of projects.value) {
+            if (project.name === projectName) {
+                for (let i = project.templates.length - 1; i >= 0; i--) {
+                    const message = project.templates[i];
+                    if (message.name === messageName) {
+                        project.templates.splice(i, 1);
+                        save();
+                    }
+                }
+            }
+        }
+    }
+
+    /**
      * Update the project corresponding with the given name by replacing its template messages by the given messages array
      * @param projectName
      * @param messages
@@ -200,6 +219,7 @@ export const useGlobalStore = defineStore('global', () => {
         addMessageTo,
         appendNotification,
         createProject,
+        deleteMessageFrom,
         deleteProject,
         load,
         updateProject,

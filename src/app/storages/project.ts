@@ -188,13 +188,15 @@ export const useProjectStore = defineStore('project', () => {
 
     /**
      * Delete the template message corresponding to the given name and return true if it succeeds and false otherwise
-     * @param name
+     * @param messageName
      */
-    function deleteTemplate(name: string): boolean {
+    function deleteTemplate(messageName: string): boolean {
+        const globalStore = useGlobalStore();
         for (let i = templates.value.length - 1; i >= 0; i--) {
             const message = templates.value[i];
-            if (message && message.name === name) {
+            if (message && message.name === messageName) {
                 templates.value.splice(i, 1);
+                globalStore.deleteMessageFrom(name.value, message.name);
                 generateDocumentation();
                 return true;
             }
