@@ -2,7 +2,6 @@
 import Menu from "./menu/Menu.vue";
 import CreateProjectModal from "./modals/CreateProjectModal.vue";
 import ConnectionModal from "./modals/ConnectionModal.vue";
-import EditMessageModal from "./modals/EditMessageModal.vue";
 import ExportModal from "./modals/ExportModal.vue";
 import MessageModal from "./modals/MessageModal.vue";
 import {useModalsStore} from "./storages/modals.ts";
@@ -15,7 +14,6 @@ import Message from "./components/Message.vue";
 import Icon from "./components/Icon.vue";
 import {useProjectStore} from "./storages/project.ts";
 import {NotificationType} from "../utils/Notification.ts";
-import {TemplateMessageType} from "../utils/TemplateMessage.ts";
 
 const globalStore = useGlobalStore();
 const projectStore = useProjectStore();

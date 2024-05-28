@@ -195,11 +195,10 @@ export const useProjectStore = defineStore('project', () => {
             const message = templates.value[i];
             if (message && message.name === name) {
                 templates.value.splice(i, 1);
+                generateDocumentation();
                 return true;
             }
         }
-
-        generateDocumentation();
         return false;
     }
 
