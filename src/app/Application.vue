@@ -24,8 +24,7 @@ const modalsStore = useModalsStore();
  */
 function deleteLocalStorage() {
     if (confirm("Do you really want to clear the local storage?")) {
-        localStorage.clear();
-        globalStore.appendNotification("Local storage has been successfully deleted.", NotificationType.SUCCESS);
+        globalStore.clear();
     }
 }
 

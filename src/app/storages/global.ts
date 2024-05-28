@@ -1,4 +1,4 @@
-import {defineStore, Store} from "pinia";
+import {defineStore} from "pinia";
 import {Ref, ref} from "vue";
 import {Notification, NotificationType} from "../../utils/Notification.ts";
 import {useProjectStore} from "./project.ts";
@@ -20,7 +20,6 @@ export const useGlobalStore = defineStore('global', () => {
     const projects: Ref<Project[]> = ref([]);
     const notifications: Ref<Notification[]> = ref([]);
 
-    const storeProjects: Ref<Store[]> = ref([]);
 
     const defaultAddress = ref("ws://localhost:2567");
     const defaultRoom = ref("");
@@ -95,6 +94,30 @@ export const useGlobalStore = defineStore('global', () => {
         if (output) {
             localStorage.setItem(PROJECTS_KEY, output);
         }
+    }
+
+    /**
+     * Clear the local storage and all the current data
+     */
+    function clear() {
+        const projectStore = useProjectStore();
+        localStorage.clear();
+
+        defaultAddress.value = "ws://localhost:2567";
+        defaultService.value = "colyseus";
+        defaultRoom.value = "";
+        defaultUsername.value = "";
+
+        projects.value = [];
+        projectStore.disconnect();
+        projectStore.slug = "";
+        projectStore.name = "";
+        projectStore.messages = [];
+        projectStore.templates = [];
+        projectStore.selectedMessage = undefined;
+        projectStore.documentation = "";
+
+        appendNotification("Local storage has been successfully deleted.", NotificationType.SUCCESS);
     }
 
     /**
@@ -215,10 +238,10 @@ export const useGlobalStore = defineStore('global', () => {
         defaultUsername,
         notifications,
         projects,
-        storeProjects,
 
         addMessageTo,
         appendNotification,
+        clear,
         createProject,
         deleteMessageFrom,
         deleteProject,
