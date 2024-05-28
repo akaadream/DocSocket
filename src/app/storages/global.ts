@@ -124,6 +124,7 @@ export const useGlobalStore = defineStore('global', () => {
         const nextProject = projects.value.find((project: Project) => project.name === projectName);
         if (nextProject) {
             projectStore.hydrate(nextProject.name, slugify(nextProject.name), nextProject.templates);
+            save();
         }
     }
 
