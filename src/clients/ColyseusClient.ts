@@ -27,7 +27,6 @@ export class ColyseusClient extends DocSocketClient {
         this.client?.create(this.roomName, {
             username: this.username
         }).then((room: Room) => {
-            console.log("");
             this.currentRoom = room;
             this.connected = true;
 
@@ -61,16 +60,13 @@ export class ColyseusClient extends DocSocketClient {
 
     public message(name: string) {
         if (!name) {
-            console.warn("no name");
             return;
         }
 
         if (!this.currentRoom) {
-            console.warn("no current room");
             return;
         }
 
-        console.log(`message ${name} listened`);
         this.currentRoom.onMessage(name, (response: any) => {
             if (response instanceof Object && response.message) {
                 this.response(name, JSON.parse(response.message));
