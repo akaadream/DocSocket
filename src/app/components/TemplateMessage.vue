@@ -6,6 +6,7 @@ import ConfirmModal from "../modals/ConfirmModal.vue";
 import {useModalsStore} from "../storages/modals.ts";
 import {NotificationType} from "../../utils/Notification.ts";
 import {useProjectStore} from "../storages/project.ts";
+import EditMessageModal from "../modals/EditMessageModal.vue";
 
 const globalStore = useGlobalStore();
 const projectStore = useProjectStore();
@@ -13,6 +14,12 @@ const modalsStore = useModalsStore();
 
 export interface TemplateMessageProps {
     identifier: number;
+    name: string;
+    args: string;
+    type: TemplateMessageType;
+}
+
+export interface EditTemplateMessage {
     name: string;
     args: string;
     type: TemplateMessageType;
@@ -27,8 +34,8 @@ function test() {
 }
 
 function edit() {
-    // TODO: display edit modal with this message as default values
-    // don't forget
+    projectStore.selectMessage(props.name, props.type);
+    modalsStore.open(`edit-template-${props.identifier}`);
 }
 
 function remove() {
@@ -43,10 +50,27 @@ function confirm() {
         globalStore.appendNotification("The message template cannot be deleted!", NotificationType.ERROR);
     }
 }
+
+function update(editedMessage: EditTemplateMessage) {
+    projectStore.editTemplate(
+        props.name,
+        editedMessage.name,
+        editedMessage.args,
+        editedMessage.type);
+    globalStore.appendNotification('The message template has been successfully edited!', NotificationType.SUCCESS);
+    modalsStore.closeModal();
+}
 </script>
 
 <template>
     <ConfirmModal @confirm="confirm" :id="`message-template-${props.identifier}`" :message-name="props.name" />
+    <EditMessageModal
+        @edit="update"
+        :id="`edit-template-${props.identifier}`"
+        :name="props.name ?? ''"
+        :args="props.args ?? ''"
+        :type="props.type === TemplateMessageType.REQUEST ? 'request' : 'response' ?? 'request'"
+    />
 
     <div :id="props.identifier" class="message-template">
         <div class="message-template-infos">

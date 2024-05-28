@@ -53,22 +53,18 @@ export const useGlobalStore = defineStore('global', () => {
         const address = localStorage.getItem(ADDRESS_KEY);
         if (address) {
             defaultAddress.value = address;
-            console.log("default address", address);
         }
         const room = localStorage.getItem(ROOM_KEY);
         if (room) {
             defaultRoom.value = room;
-            console.log("default room", room);
         }
         const service = localStorage.getItem(SERVICE_KEY);
         if (service) {
             defaultService.value = service;
-            console.log("default service", service);
         }
         const username = localStorage.getItem(USERNAME_KEY);
         if (username) {
             defaultUsername.value = username;
-            console.log("default username", username);
         }
 
         const projectStore = useProjectStore();
@@ -80,7 +76,7 @@ export const useGlobalStore = defineStore('global', () => {
             }
         }
 
-        appendNotification("Project loaded.", NotificationType.SUCCESS);
+        projectStore.generateDocumentation();
     }
 
     /**
@@ -97,18 +93,8 @@ export const useGlobalStore = defineStore('global', () => {
 
         const output = JSON.stringify(projects.value);
         if (output) {
-            console.log("output", output);
             localStorage.setItem(PROJECTS_KEY, output);
         }
-
-        appendNotification("Project saved.", NotificationType.SUCCESS);
-    }
-
-    function updateDefault(address: string, service: string, roomName: string, username: string) {
-        defaultAddress.value = address;
-        defaultService.value = service;
-        defaultRoom.value = roomName;
-        defaultUsername.value = username;
     }
 
     /**
@@ -156,6 +142,25 @@ export const useGlobalStore = defineStore('global', () => {
     }
 
     /**
+     * Update the project corresponding with the given name by replacing its template messages by the given messages array
+     * @param projectName
+     * @param messages
+     */
+    function updateProject(projectName: string, messages: TemplateMessage[]) {
+        let updated: boolean = false;
+        for (const project of projects.value) {
+            if (project.name === projectName) {
+                project.templates = messages;
+                updated = true;
+            }
+        }
+
+        if (updated) {
+            save();
+        }
+    }
+
+    /**
      * Delete an existing project
      * @param projectName
      */
@@ -197,7 +202,7 @@ export const useGlobalStore = defineStore('global', () => {
         createProject,
         deleteProject,
         load,
-        updateDefault,
+        updateProject,
         save,
         selectProject,
     };

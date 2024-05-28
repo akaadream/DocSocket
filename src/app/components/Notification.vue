@@ -10,14 +10,25 @@ export interface NotificationProps {
 }
 
 const props = defineProps<NotificationProps>();
-const timeoutId = ref(-1);
+const timeoutId = ref(-999);
+const fade = ref(false);
 
 onMounted(() => {
     timeoutId.value = setTimeout(() => {
-        timeoutId.value = -1;
-        remove();
+        timeoutId.value = -999;
+        fadeOut();
     }, 4000);
 });
+
+function fadeOut() {
+    fade.value = true;
+    if (timeoutId.value !== -999) {
+        clearTimeout(timeoutId.value);
+    }
+    setTimeout(() => {
+        remove();
+    }, 1000);
+}
 
 function remove() {
     const globalStorage = useGlobalStore();
@@ -28,9 +39,10 @@ function remove() {
 <template>
 <div class="notification" :class="{
     'is-success': props.type === NotificationType.SUCCESS,
-    'is-danger': props.type === NotificationType.ERROR
+    'is-danger': props.type === NotificationType.ERROR,
+    'fade-out': fade
 }">
-    <div class="delete" @click="remove"></div>
+    <div class="delete" @click="fadeOut"></div>
     {{ props.content }}
 </div>
 </template>

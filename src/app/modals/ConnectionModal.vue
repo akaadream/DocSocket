@@ -38,13 +38,7 @@ function connect() {
 
     if (client) {
         projectStore.setClient(client);
-        // TODO: Maybe became useless
-        globalStore.updateDefault(globalStore.defaultAddress, globalStore.defaultService, globalStore.defaultRoom, globalStore.defaultUsername);
         globalStore.save();
-        globalStore.appendNotification("Successfully connected on the service!", NotificationType.SUCCESS);
-    }
-    else {
-        globalStore.appendNotification("Unexpected error encountered!", NotificationType.ERROR);
     }
 
     modalsStore.closeModal();

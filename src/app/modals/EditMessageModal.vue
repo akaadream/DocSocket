@@ -3,44 +3,52 @@ import {useGlobalStore} from "../storages/global.ts";
 import Modal from "./Modal.vue";
 import VueCodemirror from "../components/VueCodemirror.vue";
 import {ref} from "vue";
-import {TemplateMessage, TemplateMessageType} from "../../utils/TemplateMessage.ts";
 import {useProjectStore} from "../storages/project.ts";
-import {NotificationType} from "../../utils/Notification.ts";
+import {TemplateMessageType} from "../../utils/TemplateMessage.ts";
 
-const props = defineProps<TemplateMessage>();
+export interface TemplateMessageProps {
+    name: string;
+    args: string;
+    type: string;
+}
+const props = defineProps<TemplateMessageProps>();
+const emit = defineEmits(['edit']);
 
 const globalStore = useGlobalStore();
 const projectStore = useProjectStore();
-const name = ref(props.name ?? "");
-const args = ref(props.args ?? "");
-const type = ref(TemplateMessageType[props.type] ?? TemplateMessageType.REQUEST);
 
-function editMessage() {
-    const message = projectStore.templates[props.id];
-    if (message) {
-        message.name = name.value;
-        message.args = args.value;
-        message.type = type.value === 'request' ? TemplateMessageType.REQUEST : TemplateMessageType.RESPONSE;
-
-        globalStore.appendNotification('The message template has been successfully edited!', NotificationType.SUCCESS);
-    }
-}
+const previousName = ref(props.name);
+const nextName = ref(props.name);
+const args = ref(props.args);
+const type = ref(props.type);
 
 function onUpdate(value: string) {
     args.value = value;
 }
+
+function onClose() {
+    projectStore.selectedMessage = undefined;
+}
+
+function edit() {
+    emit('edit', {
+        name: nextName.value,
+        args: args.value,
+        type: type.value === 'request' ? TemplateMessageType.REQUEST : TemplateMessageType.RESPONSE
+    });
+}
 </script>
 
 <template>
-    <Modal id="edit-message-modal" data-message="0">
-        <form @submit.prevent="editMessage" id="add-message">
+    <Modal @on-close="onClose" id="edit-message-modal" data-message="0">
+        <form @submit.prevent="edit" id="add-message">
             <div class="subtitle is-4">Edit an existing message</div>
 
             <div class="field">
                 <label class="label">Name</label>
 
                 <div class="control">
-                    <input id="edit-message-name" type="text" class="input">
+                    <input v-model="nextName" id="edit-message-name" type="text" class="input">
                 </div>
             </div>
 
@@ -48,7 +56,7 @@ function onUpdate(value: string) {
                 <label class="label">Type</label>
 
                 <div class="select">
-                    <select id="edit-message-type">
+                    <select v-model="type" id="edit-message-type">
                         <option value="request">Request</option>
                         <option value="response">Response</option>
                     </select>

@@ -80,6 +80,10 @@ form:not(:last-child) {
     font-weight: 700;
 }
 
+.title > span:last-of-type {
+    margin-left: 12px;
+}
+
 .title > span {
     font-weight: 300;
 }
@@ -106,9 +110,29 @@ form:not(:last-child) {
 
 .notification {
     min-width: 300px;
+    animation-name: moveIn;
+    animation-duration: 0.3s;
+
+    transition: 0.3s;
+}
+
+.notification.fade-out {
+    transform: translateY(100px);
+    opacity: 0;
+}
+
+@keyframes moveIn {
+    from {
+        transform: translateX(200px);
+    }
+
+    to {
+        transform: translateX(0);
+    }
 }
 
 .output {
+    position: relative;
     height: 600px;
     overflow: auto;
     background: rgba(var(--bulma-text-rgb), 0.2);
@@ -117,6 +141,13 @@ form:not(:last-child) {
 
     padding: 18px;
     margin-bottom: 12px;
+}
+
+#clear-button {
+    position: absolute;
+    left: auto;
+    right: 12px;
+    top: 12px;
 }
 
 .message:not(:last-child) {
@@ -292,6 +323,7 @@ form:not(:last-child) {
 
 .export-pre {
     position: relative;
+    min-height: 200px;
     line-height: 24px;
     border-radius: 8px;
 

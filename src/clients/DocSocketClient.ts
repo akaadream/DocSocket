@@ -4,11 +4,12 @@ import {useProjectStore} from "../app/storages/project.ts";
 export class DocSocketClient {
     connected: boolean;
     address: string;
+    alreadyListening: string[];
     
     constructor(address: string) {
         this.connected = false;
-
         this.address = address;
+        this.alreadyListening = [];
     }
 
     public connect() {

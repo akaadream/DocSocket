@@ -15,14 +15,11 @@ import Message from "./components/Message.vue";
 import Icon from "./components/Icon.vue";
 import {useProjectStore} from "./storages/project.ts";
 import {NotificationType} from "../utils/Notification.ts";
+import {TemplateMessageType} from "../utils/TemplateMessage.ts";
 
 const globalStore = useGlobalStore();
 const projectStore = useProjectStore();
 const modalsStore = useModalsStore();
-
-// TODO: some store elements seems not updating the page when they are modified like pushing a new output message
-// TODO: or when we want to detect if the client is disconnected or not
-console.log(projectStore.selected());
 
 /**
  * Clear the content from the local storage
@@ -42,6 +39,16 @@ function handleKeyboard(event: KeyboardEvent) {
     if (event.key === 'Escape') {
         modalsStore.closeModal();
     }
+}
+
+/**
+ * Clear test messages output
+ * @param event
+ */
+function clearOutput(event: Event) {
+    event.preventDefault();
+
+    projectStore.clearMessages();
 }
 
 /**
@@ -71,8 +78,7 @@ onMounted(() => {
         <CreateProjectModal />
         <ConnectionModal />
         <MessageModal />
-        <EditMessageModal v-if="projectStore.connected() && projectStore.selectedMessage" :message="projectStore.selectedMessage" />
-        <ExportModal v-if="projectStore.selected()" :content="projectStore.documentation()" />
+        <ExportModal v-if="projectStore.selected()" />
     </div>
 
     <div class="app-content" @keydown="handleKeyboard">
@@ -80,6 +86,7 @@ onMounted(() => {
             <div class="column">
                 <div class="title">
                     Doc<span class="title-thin">ket</span>
+                    <span class="tag is-dark is-rounded"> v0.1 </span>
                 </div>
 
                 <div v-if="projectStore.selected()" id="connection" class="connection-status" :class="{
@@ -98,7 +105,6 @@ onMounted(() => {
 
         <div v-if="projectStore.selected()" class="buttons spaced">
             <ModalButton v-if="!projectStore.connected()" label="Connect to the server" modal-name="connection-modal" icon="login" />
-            <!-- TODO: seems not working -->
             <button v-if="projectStore.connected()" id="disconnect" class="button" @click="projectStore.disconnect()">
                 <Icon name="logout" />
                 Disconnect from the server
@@ -133,6 +139,9 @@ onMounted(() => {
 
             <div class="column">
                 <div id="messages" class="output">
+                    <button id="clear-button" class="button" @click="clearOutput">
+                        <Icon name="delete" />
+                    </button>
                     <div class="subtitle is-5">Output messages</div>
                     <Message
                         v-if="projectStore.connected()"

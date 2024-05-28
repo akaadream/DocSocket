@@ -51,6 +51,10 @@ export class ColyseusClient extends DocSocketClient {
     }
 
     public request(name: string, args: string): void {
+        if (!this.currentRoom?.connection?.isOpen) {
+            console.warn("room connection closed");
+            return;
+        }
         this.currentRoom?.send(name, args);
         super.request(name, args);
     }
