@@ -14,8 +14,6 @@ export interface MessageProps {
 }
 
 const props = defineProps<MessageProps>();
-console.log("content");
-console.log(props.content);
 const opened = ref(false);
 const highlighted = hljs.highlight(props.content, {
     language: 'json'
