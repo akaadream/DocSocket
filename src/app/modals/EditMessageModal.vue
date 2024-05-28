@@ -14,10 +14,10 @@ export interface TemplateMessageProps {
 const props = defineProps<TemplateMessageProps>();
 const emit = defineEmits(['edit']);
 
-const globalStore = useGlobalStore();
 const projectStore = useProjectStore();
 
 const previousName = ref(props.name);
+const previousType = ref(props.type);
 const nextName = ref(props.name);
 const args = ref(props.args);
 const type = ref(props.type);
@@ -50,6 +50,8 @@ function edit() {
                 <div class="control">
                     <input v-model="nextName" id="edit-message-name" type="text" class="input">
                 </div>
+
+                <p v-if="projectStore.editTemplateAlreadyExists(previousName, previousType, nextName, type)" class="help is-danger">A message template with this name already exists</p>
             </div>
 
             <div class="field">
@@ -73,7 +75,7 @@ function edit() {
 
             <div class="field">
                 <div class="control">
-                    <button class="button is-link">Edit the message</button>
+                    <button :disabled="projectStore.editTemplateAlreadyExists(previousName, previousType, nextName, type)" class="button is-link">Edit the message</button>
                 </div>
             </div>
         </form>

@@ -167,14 +167,17 @@ export const useProjectStore = defineStore('project', () => {
     /**
      * Edit an existing template
      * @param oldName
+     * @param oldType
      * @param newName
      * @param args
      * @param type
      */
-    function editTemplate(oldName: string, newName: string, args: string, type: TemplateMessageType) {
+    function editTemplate(oldName: string, oldType: TemplateMessageType, newName: string, args: string, type: TemplateMessageType) {
+        console.log(`try update from ${oldName}, ${oldType} to ${newName}, ${type}`);
+
         const globalStore = useGlobalStore();
         for (const message of templates.value) {
-            if (message.name === oldName) {
+            if (message.name === oldName && message.type === oldType) {
                 message.name = newName;
                 message.args = args;
                 message.type = type;
@@ -202,6 +205,30 @@ export const useProjectStore = defineStore('project', () => {
             }
         }
         return false;
+    }
+
+    /**
+     * Return true if a message template with the given name already exists
+     * @param messageName
+     * @param messageType
+     */
+    function templateAlreadyExists(messageName: string, messageType: string): boolean {
+        const type: TemplateMessageType = messageType === 'request' ? TemplateMessageType.REQUEST : TemplateMessageType.RESPONSE;
+        for (const message of templates.value) {
+            if (message.name === messageName && message.type === type) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    function editTemplateAlreadyExists(previousMessageName: string, previousMessageType: string, messageName: string, messageType: string): boolean {
+        if (previousMessageType === messageType && previousMessageName === messageName) {
+            return false;
+        }
+
+        return templateAlreadyExists(messageName, messageType);
     }
 
     /**
@@ -287,6 +314,7 @@ export const useProjectStore = defineStore('project', () => {
         deleteTemplate,
         disconnect,
         editTemplate,
+        editTemplateAlreadyExists,
         generateDocumentation,
         getHighlighted,
         hydrate,
@@ -296,6 +324,7 @@ export const useProjectStore = defineStore('project', () => {
         selected,
         selectMessage,
         setClient,
+        templateAlreadyExists,
         toJson,
     }
 });

@@ -51,6 +51,8 @@ function onUpdate(value: string) {
                 <div class="control">
                     <input v-model="messageName" id="message-name" type="text" class="input">
                 </div>
+
+                <p v-if="projectStore.templateAlreadyExists(messageName, messageType)" class="help is-danger">A message template with this name already exists</p>
             </div>
 
             <div class="field">
@@ -74,7 +76,7 @@ function onUpdate(value: string) {
 
             <div class="field">
                 <div class="control">
-                    <button class="button is-link">Add the message</button>
+                    <button :disabled="projectStore.templateAlreadyExists(messageName, messageType)" class="button is-link">Add the message</button>
                 </div>
             </div>
         </form>

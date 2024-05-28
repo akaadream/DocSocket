@@ -12,8 +12,8 @@ const emit = defineEmits(['confirm']);
         <div class="subtitle is-4">Do you really want to delete {{ props.messageName }}?</div>
         <div class="field">
             <div class="control buttons">
-                <button @click.prevent="modalsStore.closeModal()" class="button">Cancel</button>
                 <button @click.prevent="emit('confirm')" class="button is-success">Confirm</button>
+                <button @click.prevent="modalsStore.closeModal()" class="button">Cancel</button>
             </div>
         </div>
     </Modal>

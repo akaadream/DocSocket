@@ -152,6 +152,20 @@ export const useGlobalStore = defineStore('global', () => {
     }
 
     /**
+     * Return true if a project with the given name already exists
+     * @param projectName
+     */
+    function alreadyExists(projectName: string): boolean {
+        for (const project of projects.value) {
+            if (project.name === projectName) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
      * Add a message to a specific project data
      * (this function is called right after a message has been added to the currently opened project)
      * @param projectName
@@ -240,6 +254,7 @@ export const useGlobalStore = defineStore('global', () => {
         projects,
 
         addMessageTo,
+        alreadyExists,
         appendNotification,
         clear,
         createProject,

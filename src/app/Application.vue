@@ -13,7 +13,6 @@ import ModalButton from "./components/ModalButton.vue";
 import Message from "./components/Message.vue";
 import Icon from "./components/Icon.vue";
 import {useProjectStore} from "./storages/project.ts";
-import {NotificationType} from "../utils/Notification.ts";
 
 const globalStore = useGlobalStore();
 const projectStore = useProjectStore();
