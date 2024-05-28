@@ -86,7 +86,7 @@ onMounted(() => {
             <div class="column">
                 <div class="title">
                     Doc<span class="title-thin">ket</span>
-                    <span class="tag is-dark is-rounded"> v0.1 </span>
+                    <span class="tag is-dark is-rounded"> beta </span>
                 </div>
 
                 <div v-if="projectStore.selected()" id="connection" class="connection-status" :class="{
