@@ -51,13 +51,17 @@ function confirm() {
     }
 }
 
+/**
+ * Update an existing template message with the form values
+ * @param editedMessage
+ */
 function update(editedMessage: EditTemplateMessage) {
     projectStore.editTemplate(
         props.name,
+        props.type,
         editedMessage.name,
         editedMessage.args,
         editedMessage.type);
-    globalStore.appendNotification('The message template has been successfully edited!', NotificationType.SUCCESS);
     modalsStore.closeModal();
 }
 </script>
@@ -67,6 +71,7 @@ function update(editedMessage: EditTemplateMessage) {
     <EditMessageModal
         @edit="update"
         :id="`edit-template-${props.identifier}`"
+        :identifier="props.identifier"
         :name="props.name ?? ''"
         :args="props.args ?? ''"
         :type="props.type === TemplateMessageType.REQUEST ? 'request' : 'response' ?? 'request'"

@@ -1,4 +1,4 @@
-import {defineStore, Store} from "pinia";
+import {defineStore} from "pinia";
 import {Ref, ref} from "vue";
 import {Notification, NotificationType} from "../../utils/Notification.ts";
 import {useProjectStore} from "./project.ts";
@@ -20,7 +20,6 @@ export const useGlobalStore = defineStore('global', () => {
     const projects: Ref<Project[]> = ref([]);
     const notifications: Ref<Notification[]> = ref([]);
 
-    const storeProjects: Ref<Store[]> = ref([]);
 
     const defaultAddress = ref("ws://localhost:2567");
     const defaultRoom = ref("");
@@ -98,6 +97,30 @@ export const useGlobalStore = defineStore('global', () => {
     }
 
     /**
+     * Clear the local storage and all the current data
+     */
+    function clear() {
+        const projectStore = useProjectStore();
+        localStorage.clear();
+
+        defaultAddress.value = "ws://localhost:2567";
+        defaultService.value = "colyseus";
+        defaultRoom.value = "";
+        defaultUsername.value = "";
+
+        projects.value = [];
+        projectStore.disconnect();
+        projectStore.slug = "";
+        projectStore.name = "";
+        projectStore.messages = [];
+        projectStore.templates = [];
+        projectStore.selectedMessage = undefined;
+        projectStore.documentation = "";
+
+        appendNotification("Local storage has been successfully deleted.", NotificationType.SUCCESS);
+    }
+
+    /**
      * Create a new project and automatically select it by default
      * @param projectName
      */
@@ -126,6 +149,20 @@ export const useGlobalStore = defineStore('global', () => {
             projectStore.hydrate(nextProject.name, slugify(nextProject.name), nextProject.templates);
             save();
         }
+    }
+
+    /**
+     * Return true if a project with the given name already exists
+     * @param projectName
+     */
+    function alreadyExists(projectName: string): boolean {
+        for (const project of projects.value) {
+            if (project.name === projectName) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /**
@@ -215,10 +252,11 @@ export const useGlobalStore = defineStore('global', () => {
         defaultUsername,
         notifications,
         projects,
-        storeProjects,
 
         addMessageTo,
+        alreadyExists,
         appendNotification,
+        clear,
         createProject,
         deleteMessageFrom,
         deleteProject,

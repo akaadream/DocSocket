@@ -13,7 +13,6 @@ import ModalButton from "./components/ModalButton.vue";
 import Message from "./components/Message.vue";
 import Icon from "./components/Icon.vue";
 import {useProjectStore} from "./storages/project.ts";
-import {NotificationType} from "../utils/Notification.ts";
 
 const globalStore = useGlobalStore();
 const projectStore = useProjectStore();
@@ -24,8 +23,7 @@ const modalsStore = useModalsStore();
  */
 function deleteLocalStorage() {
     if (confirm("Do you really want to clear the local storage?")) {
-        localStorage.clear();
-        globalStore.appendNotification("Local storage has been successfully deleted.", NotificationType.SUCCESS);
+        globalStore.clear();
     }
 }
 

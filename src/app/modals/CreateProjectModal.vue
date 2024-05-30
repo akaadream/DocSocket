@@ -13,6 +13,7 @@ const projectName = ref("");
 function createNewProject() {
     if (projectName.value) {
         globalStore.createProject(projectName.value);
+        projectName.value = "";
         modalsStore.closeModal();
     }
     else {
@@ -32,11 +33,13 @@ function createNewProject() {
                 <div class="control">
                     <input v-model="projectName" type="text" class="input" id="project-name">
                 </div>
+
+                <p v-if="globalStore.alreadyExists(projectName)" class="help is-danger">A project with this name already exists</p>
             </div>
 
             <div class="field">
                 <div class="control">
-                    <button @click.prevent="createNewProject" class="button is-link">Create</button>
+                    <button :disabled="globalStore.alreadyExists(projectName)" @click.prevent="createNewProject" class="button is-link">Create</button>
                 </div>
             </div>
         </form>

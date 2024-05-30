@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import {useGlobalStore} from "../storages/global.ts";
 import Modal from "./Modal.vue";
 import VueCodemirror from "../components/VueCodemirror.vue";
 import {ref} from "vue";
@@ -7,6 +6,7 @@ import {useProjectStore} from "../storages/project.ts";
 import {TemplateMessageType} from "../../utils/TemplateMessage.ts";
 
 export interface TemplateMessageProps {
+    identifier: number;
     name: string;
     args: string;
     type: string;
@@ -14,10 +14,7 @@ export interface TemplateMessageProps {
 const props = defineProps<TemplateMessageProps>();
 const emit = defineEmits(['edit']);
 
-const globalStore = useGlobalStore();
 const projectStore = useProjectStore();
-
-const previousName = ref(props.name);
 const nextName = ref(props.name);
 const args = ref(props.args);
 const type = ref(props.type);
@@ -40,7 +37,7 @@ function edit() {
 </script>
 
 <template>
-    <Modal @on-close="onClose" id="edit-message-modal" data-message="0">
+    <Modal @on-close="onClose" id="edit-message-modal">
         <form @submit.prevent="edit" id="add-message">
             <div class="subtitle is-4">Edit an existing message</div>
 
@@ -50,6 +47,8 @@ function edit() {
                 <div class="control">
                     <input v-model="nextName" id="edit-message-name" type="text" class="input">
                 </div>
+
+                <p v-if="projectStore.editTemplateAlreadyExists(identifier, nextName, type)" class="help is-danger">A message template with this name already exists</p>
             </div>
 
             <div class="field">
@@ -73,7 +72,7 @@ function edit() {
 
             <div class="field">
                 <div class="control">
-                    <button class="button is-link">Edit the message</button>
+                    <button :disabled="projectStore.editTemplateAlreadyExists(identifier, nextName, type)" class="button is-link">Edit the message</button>
                 </div>
             </div>
         </form>
