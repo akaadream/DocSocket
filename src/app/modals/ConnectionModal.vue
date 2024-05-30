@@ -64,8 +64,7 @@ function connect() {
                 <div class="select">
                     <select v-model="globalStore.defaultService" id="client">
                         <option value="colyseus">Colyseus</option>
-                        <option value="socketio">Socket.io</option>
-                        <option value="websocket">Web socket</option>
+                        <!--<option value="socketio">Socket.io</option>-->
                     </select>
                 </div>
             </div>
