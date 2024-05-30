@@ -56,8 +56,6 @@ function confirm() {
  * @param editedMessage
  */
 function update(editedMessage: EditTemplateMessage) {
-    // TODO: the edited message modal got issues (the edited message is considered as existing message)
-    // TODO: when we create a new message, the added message is duplicated
     projectStore.editTemplate(
         props.name,
         props.type,
@@ -73,6 +71,7 @@ function update(editedMessage: EditTemplateMessage) {
     <EditMessageModal
         @edit="update"
         :id="`edit-template-${props.identifier}`"
+        :identifier="props.identifier"
         :name="props.name ?? ''"
         :args="props.args ?? ''"
         :type="props.type === TemplateMessageType.REQUEST ? 'request' : 'response' ?? 'request'"

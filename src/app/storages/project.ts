@@ -173,8 +173,6 @@ export const useProjectStore = defineStore('project', () => {
      * @param type
      */
     function editTemplate(oldName: string, oldType: TemplateMessageType, newName: string, args: string, type: TemplateMessageType) {
-        console.log(`try update from ${oldName}, ${oldType} to ${newName}, ${type}`);
-
         const globalStore = useGlobalStore();
         for (const message of templates.value) {
             if (message.name === oldName && message.type === oldType) {
@@ -223,8 +221,18 @@ export const useProjectStore = defineStore('project', () => {
         return false;
     }
 
-    function editTemplateAlreadyExists(previousMessageName: string, previousMessageType: string, messageName: string, messageType: string): boolean {
-        if (previousMessageType === messageType && previousMessageName === messageName) {
+    function editTemplateAlreadyExists(identifier: number, messageName: string, messageType: string): boolean {
+        if (templates.value.length === 0) {
+            return false;
+        }
+
+        const type: TemplateMessageType = messageType === 'request' ? TemplateMessageType.REQUEST : TemplateMessageType.RESPONSE;
+        const template = templates.value[identifier];
+        if (!template) {
+            return false;
+        }
+
+        if (templates.value[identifier].name === messageName && templates.value[identifier].type === type) {
             return false;
         }
 

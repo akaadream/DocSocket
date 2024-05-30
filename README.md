@@ -21,7 +21,7 @@ Then launch the app:
 ```
 npm run dev
 ```
-The app whill then be available at: http://localhost:5173/
+The app will then be available at: http://localhost:5173/
 
 A testing server for Colyseus is also available under the `docket-colyseus` folder:
 ```
@@ -34,7 +34,7 @@ This will start the NodeJS server and the colyseus server will be available at h
 ## Contribute
 
 Contributions are welcome to make Docket even better.
-The contribution guide will be posted as soon as possible but you can already fork the project and start working on an issue or relevant upgrade if you want.
+The contribution guide will be posted as soon as possible, but you can already fork the project and start working on an issue or relevant upgrade if you want.
 
 ## Export example
 
